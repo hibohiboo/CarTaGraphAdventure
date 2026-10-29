@@ -46,7 +46,7 @@ pnpm tools:test       # node --test（scripts/ と .claude/hooks/ の補助ス�
 pnpm trace:report     # 要望からユースケース・画面・ルールの節・テスト・集約・イベントまでのつながりの図のページ（trace-report/index.html）を作る。`pnpm docs:build; pnpm web:e2e; pnpm test:report; pnpm trace:report` と流す（docs/architecture/test-report.md「トレースの見方」）
 pnpm test:report      # 各パッケージの Vitest を HTML・JSON のレポート付きで流す（各パッケージの vitest-report/ に書く。デプロイが Pages に載せる。docs/architecture/test-report.md）
 pnpm docs:dev         # 仕様書サイトをローカルで確認
-pnpm docs:build       # 仕様書サイトのビルド（リンク切れ・見出しへのリンクの食い違い・用語の旧称（scripts/check-terms.mjs）・画面一覧とルート定義の食い違い（scripts/check-screens.mjs）・集約・イベントの流れ・実装パターンの文書どうしのドメインイベントの食い違い（scripts/check-events.mjs）・E2E のテストに付けたユースケースの ID のタグ・ステップと use-cases.md の表の食い違い（scripts/check-usecase-tags.mjs）・要望の trace と UC の表の画面・集約・イベントの列の食い違い（scripts/check-trace.mjs）・下の「開発ルールの適用」の表や .claude/rules/ とルールのページの paths の食い違い（scripts/sync-claude-rules.mjs --check）があると失敗する）
+pnpm docs:build       # 仕様書サイトのビルド（リンク切れ・見出しへのリンクの食い違い・用語の旧称（scripts/check-terms.mjs）・画面一覧とルート定義の食い違い（scripts/check-screens.mjs）・集約・イベントの流れ・実装パターンの文書どうしのドメインイベントの食い違い（scripts/check-events.mjs）・E2E のテストに付けたユースケースの ID のタグ・ステップと use-cases.md の表の食い違い（scripts/check-usecase-tags.mjs）・要望の trace と UC の表の画面・集約・イベントの列の食い違い（scripts/check-trace.mjs）・文書が指すスクリプト・検査・pnpm のスクリプトが無いこと（scripts/check-doc-refs.mjs）・下の「開発ルールの適用」の表や .claude/rules/ とルールのページの paths の食い違い（scripts/sync-claude-rules.mjs --check）があると失敗する）
 pnpm build:pages      # docs + app + API ドキュメントをまとめてビルド（デプロイと同じ）
 pnpm api:docs         # API ドキュメント（OpenAPI の文書と Redoc の HTML）を docs/.vitepress/dist/api-docs/ に作る。redocly lint で誤りがあれば失敗する（docs:build の後に流す。docs/architecture/web-app.md「API ドキュメント」）
 pnpm lint             # Biome（フォーマット・import整理・lintをまとめてチェック）

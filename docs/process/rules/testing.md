@@ -130,4 +130,4 @@ test.skip('手札を出してから提案する…', {
 止めるもの：
 
 - 見出しに無いタグ・対象外の節のタグを付けたテストは、Vitest が実行時に「The tag "…" is not defined in the configuration」で落とす（ファイルごと落ちる）。**ルールのページの見出しを直す・消すと、そのタグを付けたテストが落ちる**。`grep -rn "rule:<ページ>/<見出し>" packages apps` でテストを探して、タグを新しい見出しに直す
-- 見出しの書式（空白・`! * & | ( )`・`{#id}`・インラインの記法）と、同じページの同じ見出しは、Vitest の設定の読み込み（`scripts/rule-sections.mjs`）が止める。対象外の一覧と見出しの食い違いを止める検査（`check-rule-test-exclusions.mjs`）は持ち込んでいない
+- 見出しの書式（空白・`! * & | ( )`・`{#id}`・インラインの記法）と、同じページの同じ見出しは、Vitest の設定の読み込み（`scripts/rule-sections.mjs`）が止める。対象外の一覧と見出しの食い違いを止める検査（前のリポジトリの `check-rule-test-exclusions.mjs`）は持ち込んでいない
