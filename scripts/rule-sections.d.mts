@@ -35,4 +35,7 @@ export function isExcluded(
   section: { page: string; heading: string },
   exclusions: Exclusion[],
 ): boolean;
-export function vitestTags(): { name: string; description: string }[];
+export function vitestTags(
+  sections?: RuleSection[],
+  exclusions?: Exclusion[],
+): { name: string; description: string }[];

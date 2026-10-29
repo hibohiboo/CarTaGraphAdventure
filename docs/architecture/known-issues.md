@@ -33,3 +33,6 @@
 - 同：`docs/open-questions.md`「遊んだことの持ち方」が「どの形（イベントの列など）で持つか」を未決と書くが、ロードマップはイベントの列と決めている
 - 同：進化ログの置いていったものは「却下」の節にあり、プランの「候補として書く」と違う。D4 の `widgets/`・`entities/` は作っていない（空のディレクトリは git に載らない）。`.gitattributes` の先頭のコメントが消えた
 - 同：`docs/process/rules/review.md:18`・`testing.md:49` が、まだ無い playable-scene の書き込みの口の規則を持っている
+- 同（2回目）：`scripts/` のテストのデータ（`check-events`・`check-trace`・`build-trace-report`・`build-usecase-report`・`check-screens` などの `*.test.mjs`）に、元のゲームの語（GM・セッション・シナリオの公開・自動戦闘）が残っている。見本なので動きには関わらない
+- 同（2回目）：`docs/backlog/index.md` の trace の例の `screens: [/]` は、PL-2 の画面（試験のシーン）と合っていない。シーンの画面を作ったら合わせる
+- 同（2回目）：`static-analysis.md` の「検査の対象から外しているファイル」は、MSW を入れたら `mockServiceWorker.js` を足す

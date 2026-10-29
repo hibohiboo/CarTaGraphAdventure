@@ -733,7 +733,7 @@
                       "!../endpoint/**",
                       "!./../endpoint/**"
                     ],
-                    "message": "api/ が import してよい先は、URL の区切りごとのディレクトリ（いまは無い。足したらここに許可を足す）・endpoint/・body/ と @cartagraph/domain・zod だけ（docs/process/rules/architecture.md「packages/schemas の中の置き場所」）"
+                    "message": "api/ が import してよい先は、URL の区切りごとのディレクトリ（いまは無い。足し方は architecture.md の同じ節）・endpoint/・body/ と @cartagraph/domain・zod だけ（docs/process/rules/architecture.md「packages/schemas の中の置き場所」）"
                   }
                 ]
               }

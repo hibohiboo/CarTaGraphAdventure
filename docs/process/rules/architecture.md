@@ -99,7 +99,7 @@ scripts/check-usecase-tags.mjs・build-usecase-report.mjs・build-trace-report.m
 - `api/endpoints.ts` が全ディレクトリの一覧を1本にまとめ、`api/openapi.ts` がそこから OpenAPI の文書を作る
 - 列挙などは `packages/domain` のスキーマから引き、書き写さない
 - 直下にファイルを置かない・`index.ts` を作らない・自分のパッケージ名で import しない（`packages/domain` と同じ決まり）
-- 依存の向き：`api/` → 各ディレクトリ・`endpoint/`・`body/`、各ディレクトリ → `endpoint/`・`body/`、`endpoint/` → `body/`。`body/` はどこにも依存しない（zod だけ）。各ディレクトリと `api/` は `@cartagraph/domain`・zod も使ってよく、`endpoint/` は zod だけ。機械的な検査は Biome（`biome.json` の `packages/schemas/src/**` の override。新しいディレクトリは区切りのディレクトリの override の `includes` に足す。足し忘れても、全体の override がほかのディレクトリの import を止める）
+- 依存の向き：`api/` → 各ディレクトリ・`endpoint/`・`body/`、各ディレクトリ → `endpoint/`・`body/`、`endpoint/` → `body/`。`body/` はどこにも依存しない（zod だけ）。各ディレクトリと `api/` は `@cartagraph/domain`・zod も使ってよく、`endpoint/` は zod だけ。機械的な検査は Biome（`biome.json` の `packages/schemas/src/**` の override。区切りのディレクトリはいまは無いので、その override も無い。最初の区切りのディレクトリを足すときに、`endpoint/`・`body/` だけを許す override を作って `includes` にそのディレクトリを書き、`api/` の override の許可にも足す。以降のディレクトリは、その2か所に足す。足し忘れても、全体の override がほかのディレクトリの import を止める）
 
 ## React の書き方
 
