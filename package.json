@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.6.3",
-    "@redocly/cli": "^2.62.1",
+    "@redocly/cli": "^2.72.0",
     "mermaid": "^11.17.2",
     "tsx": "^4.23.15",
     "vitepress": "^1.6.4",

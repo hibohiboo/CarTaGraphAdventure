@@ -49,5 +49,4 @@ redocly([
   join(OUT_DIR, 'index.html'),
   '--title',
   'カルタグラフ・アドベンチャー API',
-  '--disableGoogleFont',
 ]);

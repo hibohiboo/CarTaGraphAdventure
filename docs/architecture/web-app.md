@@ -40,7 +40,7 @@ pnpm api:docs        # API ドキュメントを docs/.vitepress/dist/api-docs/ 
 - **検査** — `redocly lint` を通してから HTML にする。設定はルートの `redocly.yaml`：警告も誤りにする `recommended-strict` を基に、`security-defined`（認証はまだ無い）・`info-license`（公開の API ではない）・`operation-4xx-response`（失敗を返さない API がある）だけを止めた。CI（`ci.yml`）・pre-push・デプロイ（`build:pages`）で流れ、誤りが1件でもあれば止まる
 - **一覧が空のうち** — 最初の API は、提案を要望のファイルに書く開発サーバーの口（`docs/plans/2026-10-30-P1-骨の持ち込み.md` D10）
 - **手元で見る** — `pnpm docs:build && pnpm api:docs && pnpm docs:preview --port 4175 --strictPort` で `http://localhost:4175/CarTaGraphAdventure/api-docs/`（4173 は E2E、4174 はエージェントの vite の preview が使う。4175 番の vitepress preview も `pnpm web:dev:agent:stop` で止まる）。`pnpm docs:dev` には無い（サイドバーのリンクは 404 になる）
-- **外部への依存** — Redoc の本体は `cdn.redocly.com` から読む（`@redocly/cli` の `build-docs` は同梱できないため）。Google Fonts は読まない（`--disableGoogleFont`。`@redocly/cli` 2.72 ではこのオプションが無くなり、既定で読まなくなるので、版を上げるときに外す）。`@redocly/cli` のテレメトリと更新の確認は、スクリプトが環境変数で止める
+- **外部への依存** — Redoc の本体は `cdn.redocly.com` から読む（`@redocly/cli` の `build-docs` は同梱できないため）。Google Fonts は読まない（`@redocly/cli` 2.72 から既定で読まない。`--disableGoogleFont` は無くなり、指定すると失敗する）。`@redocly/cli` のテレメトリと更新の確認は、スクリプトが環境変数で止める
 
 ## ローカル開発の注意（つまずきやすい点）
 

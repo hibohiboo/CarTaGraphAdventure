@@ -12,8 +12,8 @@ importers:
         specifier: ^2.6.3
         version: 2.6.3
       '@redocly/cli':
-        specifier: ^2.62.1
-        version: 2.62.1
+        specifier: ^2.72.0
+        version: 2.72.0
       mermaid:
         specifier: ^11.17.2
         version: 11.17.2
@@ -811,8 +811,8 @@ packages:
   '@polka/url@1.0.0-next.29':
     resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
 
-  '@redocly/cli@2.62.1':
-    resolution: {integrity: sha512-KdhRvUGkaom19U83mlRJE10T4svPf8EHCn9AGLgIHxqHgVTyjQMLyrOoIU46pV6Gtvbe3t035ckIDVYeqXC4VQ==}
+  '@redocly/cli@2.72.0':
+    resolution: {integrity: sha512-uxBuakWcy/myh7WzwVtMCW49Aehs5xSgCj860MeguXBoTnOrGH5LfLrte+U7V1ZtcLAXPeJIxiv5BnV+5WC3qA==}
     engines: {node: '>=22.12.0 || >=20.19.0 <21.0.0', npm: '>=10'}
     hasBin: true
 
@@ -3045,7 +3045,7 @@ snapshots:
 
   '@polka/url@1.0.0-next.29': {}
 
-  '@redocly/cli@2.62.1': {}
+  '@redocly/cli@2.72.0': {}
 
   '@rolldown/pluginutils@1.0.0-rc.3': {}
 
