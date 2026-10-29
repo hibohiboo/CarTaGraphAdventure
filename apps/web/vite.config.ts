@@ -16,11 +16,11 @@ export default defineConfig({
   // 開発サーバーを、気づかずに確かめてしまわないため
   server: { port: 5173, strictPort: true, host: '0.0.0.0' },
   build: {
-    rollupOptions: {
+    rolldownOptions: {
       output: {
         // ライブラリ本体とアプリ本体を分け、アプリ側の変更でライブラリのキャッシュが無効にならないようにする
-        manualChunks: {
-          react: ['react', 'react-dom', 'react-router'],
+        codeSplitting: {
+          groups: [{ name: 'react', test: /node_modules[\\/](react|react-dom|react-router)[\\/]/ }],
         },
       },
     },
