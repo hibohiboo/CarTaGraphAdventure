@@ -1,14 +1,16 @@
 // ルールのページ（docs/cartagraph/）の節（##・###）ごとに、それを確かめる Vitest のテストと最新の結果
-// （確認済・落ちた・スキップのみ・テストなし・対象外）を一覧にする HTML を作る。デプロイが Vitest を流した後に回し、
-// GitHub Pages の /rule-test-report/ に載せる（scripts/copy-test-reports-to-pages.mjs が写す）。
-// 一覧のページへのリンクは docs/architecture/test-report.md。タグの書き方は docs/process/rules/testing.md「ルールのテストのタグ」。
+// （確認済・落ちた・スキップのみ・テストなし・対象外）を一覧にする HTML を作る。
+// このリポジトリではページを作らない（pnpm のスクリプトにもデプロイにも入っていない）。build-trace-report.mjs が
+// collectTests・computeSectionStates を部品として使うので置いている（docs/plans/2026-10-30-P1-骨の持ち込み.md R1）。
+// タグの書き方は docs/process/rules/testing.md「ルールのテストのタグ」。
 //
 // 入力：domain・schemas・web の Vitest の JSON（各パッケージの vitest-results/results.json）、ルールのページの見出し
 //       （rule-sections.mjs）、対象外の一覧、ビルド結果の HTML（見出しへのリンクとページの並び。無ければページへのリンクとファイル名順）。
 // 出力：rule-test-report/index.html
 // 読めないパッケージがあっても失敗させず、先頭に「結果なし」を出す（デプロイを止めない方針のため）。
 //
-// 使い方: pnpm docs:build; pnpm test:report; pnpm rule:report   （docs:build が無いと、リンクがページまでになり並びがファイル名順になる）
+// 使い方（ページを作るとき）: pnpm docs:build; pnpm test:report; node scripts/build-rule-test-report.mjs
+//   （docs:build が無いと、リンクがページまでになり並びがファイル名順になる）
 // テストは scripts/build-rule-test-report.test.mjs（pnpm tools:test）。
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';

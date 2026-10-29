@@ -175,14 +175,30 @@ describe('実物の docs/cartagraph', () => {
     }
   });
 
-  it('T7: vitestTagsは{name, description}を返し、対象外の節を含まない', () => {
+  it('T7: vitestTagsは実物の節から{name, description}を返す', () => {
     const tags = vitestTags();
     const scene = tags.find((t) => t.name === 'rule:index/シーンですること');
     assert.ok(scene, 'シーンですることのタグがある');
     assert.equal(scene.description, '遊びの共通の形「シーンですること」');
     assert.equal(new Set(tags.map((t) => t.name)).size, tags.length);
-    // 対象外の一覧の節を外すことは、下の「ページ全体の対象外は…」のテストが確かめる（実物の一覧はまだ空）
-    assert.equal(new Set(tags.map((t) => t.name)).has('rule:index/提案'), true);
+  });
+
+  it('vitestTagsは対象外の一覧の節を含まない（ページ全体の対象外・節の対象外とも）', () => {
+    const section = (page, heading) => ({
+      tag: `rule:${page}/${heading}`,
+      page,
+      pageTitle: page,
+      heading,
+    });
+    const sections = [section('a', '残る'), section('a', '外す'), section('b', 'どれも外す')];
+    const exclusions = [
+      { page: 'a', heading: '外す', reason: 'r' },
+      { page: 'b', heading: null, reason: 'r' },
+    ];
+    assert.deepEqual(
+      vitestTags(sections, exclusions).map((t) => t.name),
+      ['rule:a/残る'],
+    );
   });
 });
 

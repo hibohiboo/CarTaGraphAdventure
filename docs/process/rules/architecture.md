@@ -70,14 +70,14 @@ scripts/check-usecase-tags.mjs・build-usecase-report.mjs・build-trace-report.m
   - 層・グループのフォルダ（`pages/<グループ>/`）・スライスの直下にファイルを置かない（app を除く）。必ずセグメント（例：`ui`・`api`・`lib`・`model`。shared には `content`・`routes` もある）に入れ、セグメントの中にさらにフォルダを作らない。直下に置くと `../` だけで別のスライスに届き、深くすると同じスライスの中の import が検査に止められるため。グループのフォルダには共有コードを置かない
   - 公開 API の index.ts は作らない。スライスの外からもファイルを直接 import する（下の「境界」の barrel 禁止に従う。FSD も index を必須としていない）
   - `main.tsx`・`vite-env.d.ts`・`test/` は層の外。層の外は層を import してよい（`@/` で）。層は層の外を import しない
-  - packages/domain との違い：domain の中は決まった向きならディレクトリをまたげる（例：`scenario → card`）が、web の entities はエンティティどうしの import を禁止する（FSD）。複数のエンティティを組み合わせる UI は widgets か pages で組み合わせる。エンティティをまたぐキャッシュの無効化は、shared のクエリキーで行う
+  - packages/domain との違い：domain の中は決まった向きならディレクトリをまたげるが、web の entities はエンティティどうしの import を禁止する（FSD）。複数のエンティティを組み合わせる UI は widgets か pages で組み合わせる。エンティティをまたぐキャッシュの無効化は、shared のクエリキーで行う
   - 機械的な検査は Biome（`biome.json` の `apps/web/src/<層>/**` ごとの `style/noRestrictedImports`）。禁止パターンの正は `biome.json`、理由はここ。層を足す・向きを変えるときは両方を直す。後ろの override は前の override の禁止を置き換えるので、層の直下のファイル用の override にも同じ禁止を書く（override の漏れを止める検査は持ち込んでいない。[体制の進化ログ](../evolution/2026-10.md)）
 
 ## packages/domain の中の置き場所
 
 `packages/domain/src/` は、仕様ページ（`docs/cartagraph/`）に合わせたドメインごとのディレクトリに分ける。ディレクトリの一覧は下の表が正。ディレクトリは、ドメイン駆動設計で決めた[業務領域](../../architecture/domain-map.md)・[境界づけられたコンテキスト](../../architecture/bounded-contexts.md)・[集約](../../architecture/aggregates.md)とは1対1になっていない。コードを組み替えるときは、それらと既知の問題「ドメインモデル」を先に読む。
 
-- **型は `model.ts`、ロジックは役割の名前のファイル** — 各ディレクトリの型は `model.ts` に置き、zod スキーマ・型（`z.infer`）・ラベルを隣り合わせにする。JSON に書くもの（シナリオ・ルール）と API の応答に入るもの（セッション・キャラクターなど）は、zod スキーマを正にして型を `z.infer` で導く（`packages/schemas` が API の一覧と OpenAPI に使う）。ロジックは `resolve.ts`・`refs.ts`・`transition.ts` のように役割で名づける。テストは対象と同じディレクトリに、対象のファイル名で置く
+- **型は `model.ts`、ロジックは役割の名前のファイル** — 各ディレクトリの型は `model.ts` に置き、zod スキーマ・型（`z.infer`）・ラベルを隣り合わせにする。JSON に書くもの（シナリオ・ルール）と API の応答に入るもの（キャラクターなど）は、zod スキーマを正にして型を `z.infer` で導く（`packages/schemas` が API の一覧と OpenAPI に使う）。ロジックは `resolve.ts`・`refs.ts`・`transition.ts` のように役割で名づける。テストは対象と同じディレクトリに、対象のファイル名で置く
 - **直下にファイルを置かない。`index.ts` を作らない** — 利用側は `@cartagraph/domain/<ディレクトリ>/<ファイル>` を直接 import する（`package.json` の `exports` はワイルドカード）。domain の中は相対パスで import し、自分のパッケージ名では import しない
 - **新しいディレクトリを足すときは、下の依存の表にも足す**
 
@@ -92,7 +92,7 @@ scripts/check-usecase-tags.mjs・build-usecase-report.mjs・build-trace-report.m
 
 ## packages/schemas の中の置き場所
 
-`packages/schemas/src/` は、API の URL の最初の区切りごとのディレクトリ（名前は区切りと同じ。いまは無い）と、共通の `body/`（本文の検査）・`endpoint/`（一覧の1項目の定義と応答の検査）、全体をまとめる `api/` に分ける。
+`packages/schemas/src/` は、API の URL の最初の区切りごとのディレクトリ（名前は区切りと同じ。いまは無い）と、共通の `body/`（本文の検査）・`endpoint/`（一覧の1項目の定義）、全体をまとめる `api/` に分ける。
 
 - 各ディレクトリの `request.ts` に、エンドポイントごとの本文のスキーマを `defineBody(スキーマ, 個別のメッセージの表)` で置く。書くのは形だけ（型・必須か・配列の要素の形）で、業務の検査は受け取る側・ドメインに残す
 - 各ディレクトリの `endpoints.ts` に、その区切りの API の一覧を `defineEndpoint` で置く（メソッド・パス・本文と、返しうる状態コードごとの応答の形。失敗の本文はどれも `{ message }`）。`response.ts` には、`packages/domain` に無い応答の形だけを置く。応答の形の多くは domain の zod スキーマを使う
@@ -117,7 +117,7 @@ React のコードは、Vercel Labs の [react-best-practices](https://github.co
 
 ## 1ファイル1責務
 
-- ファイルの担当を一文で言えること。「セッション管理ページ」は合格、「GM周りのUIいろいろ」は失格
+- ファイルの担当を一文で言えること。「シーンの画面」は合格、「プレイ周りのUIいろいろ」は失格
 - ファイルが肥大したら、責務の境界で割る。関数・ファイルの行数と認知的複雑度の上限は Biome で止める（しきい値は[静的解析ルール](static-analysis.md)「コードの複雑さ」）（例：ページの中の大きな一区画を、そのページのスライスの `ui/` に別ファイルとして切り出す。複数のページで使うなら widgets・entities へ）
 - **上限に引っかかったら** — 関数を分ける（判定・計算は純粋関数へ出す。下の「副作用の分離」）。React のコンポーネントなら、画面の一区画を子コンポーネントに切り出す。しきい値を上げて通すことはしない
 - **`biome-ignore` で抑えるとき** — 新しく足すのは、分けるとかえって読みにくくなる理由があるときだけにし、その理由をコメントに書く。レビューで理由を確かめる

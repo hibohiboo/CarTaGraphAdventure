@@ -18,4 +18,18 @@
 
 レビューの P2 を1行で記録する（[レビューのルール](../process/rules/review.md)）。
 
-- いまは無い
+- P1 の持ち込み（2026-10-30）：`.gitignore` に、置いていった `rule:report`・`/rule-test-report/`・`scenarioFilePlugin`・`scenarios/.*.tmp` の行が残っている
+- 同：`.claude/agents/spec-reviewer.md` が、持ち込んでいない `rulebook.ts` を確かめる手順を持っている
+- 同：`scripts/check-screens.mjs` の `NOT_IN_DIAGRAM = ['admin']` が、元のルートのグループのまま
+- 同：`packages/schemas` の `body/parse.ts` のコメントが MSW を前提にしている（MSW を入れるときに合わせる）
+- 同：使われていない依存（`packages/domain` の `zod`、`packages/schemas` の `@cartagraph/domain`、`apps/web` の `@cartagraph/domain`・`@testing-library/user-event`）と、`apps/web/tsconfig.json` の include の無いディレクトリ `vite`
+- 同：`scripts/build-trace-report.test.mjs:530` の、R8 で置き換えた通しの確かめ（`req:foundation` は trace が none で、skipped になりえない）。単体は :453 が確かめている
+- 同：`scripts/check-doc-anchors.mjs` は、`rulebook.ts` が無ければ黙って 0 件で通る（置き場所を変えると検査が外れたままになる）
+- 同：`scripts/check-events.mjs` の `section()` は、見出しが無いと空文字を返す。表が空の今は、見出しを消しても 0 件で通る
+- 同：`docs/.vitepress/backlog.data.ts` は、要望の `status` の綴り違いを止めない（並びが先頭になり、バッジが出ないだけ）
+- 同：`packages/schemas` の一覧が空なので、`endpoints.test.ts` の重複・`/api` の検査が何も確かめていない。`openapi.ts` の `tagOf` は、パスが `/` だと空のタグを返す（最初の API を足すときに見る）
+- 同：`scripts/branch-id.mjs` の `readMergedPlans` は、ローカルに `main` が無いクローンでは黙って 0 件になる（元と同じ）
+- 同：`docs/process/` の `spec-writing.md`・`static-analysis.md`・`testing.md` が「前のリポジトリの…」と書く（リポジトリ名を書いたほうが読みやすい）
+- 同：`docs/open-questions.md`「遊んだことの持ち方」が「どの形（イベントの列など）で持つか」を未決と書くが、ロードマップはイベントの列と決めている
+- 同：進化ログの置いていったものは「却下」の節にあり、プランの「候補として書く」と違う。D4 の `widgets/`・`entities/` は作っていない（空のディレクトリは git に載らない）。`.gitattributes` の先頭のコメントが消えた
+- 同：`docs/process/rules/review.md:18`・`testing.md:49` が、まだ無い playable-scene の書き込みの口の規則を持っている

@@ -24,9 +24,9 @@ plans:              # docs/plans/ のプランのファイル名（あれば）
 cycles:             # 開発者向け：サイクルごとの状態と PR（あれば）
   - { name: C1 基盤, status: 完了, pr: 1 }
 trace:              # アイデアがどこへ届くか（必須）。usecases・screens・rules のリストか、none の理由のどちらか
-  usecases: [SC-6]
-  screens: [/creator/scenarios/:scenarioId]
-  rules: [scenario-flow/シナリオの公開]
+  usecases: [PL-2]
+  screens: [/]
+  rules: [index/提案]
 updated: 2026-01-01
 ---
 ```

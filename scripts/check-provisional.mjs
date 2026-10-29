@@ -1,6 +1,7 @@
-// 仮ルールの一覧（docs/provisional/）と、仕様ページの「仮」の印が食い違っていないかを確かめる
-// （pnpm docs:build の最後に流れる。pre-push・CI でも止まる。書き方は docs/provisional/index.md）。
-// 仮ルールを足したのに一覧に載せ忘れる、決めたのにファイルを消し忘れる、を機械で止める（2026-10-10、仮ルールの一覧を作ったとき）。
+// 仮ルールの一覧（docs/provisional/）と、仕様ページの「仮」の印が食い違っていないかを確かめる。
+// このリポジトリでは検査として流さない（docs:build にも CI にも入っていない。docs/provisional/ も無い）。
+// rule-sections.mjs が hasProvisionalMark・NOT_SPEC を部品として使うので置いている（docs/plans/2026-10-30-P1-骨の持ち込み.md R1）。
+// 仮ルールの仕組みを持ち込むかは docs/process/evolution/2026-10.md の却下「開発の速さの足を引っ張る検査は…」。
 //
 // 確かめること
 // - 仕様ページ（docs/cartagraph/）の題名・見出しに「（仮ルール）」「（仮マッピング）」などの印があれば、

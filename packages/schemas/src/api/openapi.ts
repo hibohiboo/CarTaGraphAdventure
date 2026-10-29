@@ -10,7 +10,7 @@ type Json = Record<string, unknown>;
 
 /**
  * components.schemas に名前で出す型。循環するスキーマは必ず登録する
- * （登録しないと、名前の無い循環が壊れた参照になる）。仮ルールの型は説明に「仮ルール」と書く
+ * （登録しないと、名前の無い循環が壊れた参照になる）
  */
 const named: [z.ZodType, string, string?][] = [
   [errorBodySchema, 'Error', '失敗の応答の本文。どの API も同じ形'],
@@ -106,18 +106,6 @@ function operation(e: Endpoint, components: Json): Json {
   };
 }
 
-/**
- * 文書の冒頭に出す「仮ルールと仕様とのずれ」の一覧。Redoc は応答の一番外側の型の説明を表示しないので、
- * 型の説明のうち仮ルール・仕様とのずれを書いたものを、ここにも並べる（説明の正は上の named）。無ければ出さない
- */
-function notesSection(): string {
-  const lines = named
-    .filter(([, , d]) => d && /仮ルール|仕様とずれ/.test(d))
-    .map(([, id, d]) => `- **${id}** — ${d}`);
-  if (lines.length === 0) return '';
-  return `\n\n## 仮ルールと仕様とのずれ\n\n型ごとの説明から並べた（各型の説明にも同じことを書いている）。\n\n${lines.join('\n')}`;
-}
-
 /** OpenAPI 3.1 の文書。endpoints はテストで差し替える */
 export function buildOpenApiDocument(endpoints: readonly Endpoint[] = allEndpoints): Json {
   const components: Json = {};
@@ -132,7 +120,8 @@ export function buildOpenApiDocument(endpoints: readonly Endpoint[] = allEndpoin
     info: {
       title: 'カルタグラフ・アドベンチャー API',
       version: '0.0.0',
-      description: `カルタグラフ・アドベンチャーの Web アプリが使う API。バックエンドはまだ無い。一覧の正は packages/schemas。${notesSection()}`,
+      description:
+        'カルタグラフ・アドベンチャーの Web アプリが使う API。バックエンドはまだ無い。一覧の正は packages/schemas。',
     },
     servers: [{ url: '/', description: 'ローカルの開発サーバー。バックエンドは未実装' }],
     tags: usedTags.map((name) => ({ name, description: TAGS[name] ?? name })),

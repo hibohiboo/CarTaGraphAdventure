@@ -18,7 +18,7 @@ paths:
 | 単体 | Vitest | `apps/web/src/test/`（対象のファイル名を反映。例：`shared/lib/japanese.ts` → `test/japanese.test.ts`） | `pnpm web:test` | ロジックの境界値・異常系 |
 | ページ描画 | Vitest + Testing Library | 全ルートの描画とページの小さな操作は `apps/web/src/test/pages.test.tsx`、機能の操作の連なりは機能名のファイル（例：`examScene.test.tsx`） | 同上 | 全ルートが描画できること、主要操作が通ること |
 | ドメイン | Vitest | `packages/domain/src/**/*.test.ts`（対象と同じディレクトリに、対象のファイル名を反映。例：`play/replay.ts` → `play/replay.test.ts`） | `pnpm domain:test`（型検査は `pnpm domain:typecheck`） | 純粋関数の判定・変換 |
-| API のスキーマ | Vitest | `packages/schemas/src/**/*.test.ts`（ドメインと同じ置き方） | `pnpm schemas:test`（型検査は `pnpm schemas:typecheck`） | 本文の形の検査と誤りのときのメッセージ、API の一覧、応答の検査（`checkResponse`）、OpenAPI の文書 |
+| API のスキーマ | Vitest | `packages/schemas/src/**/*.test.ts`（ドメインと同じ置き方） | `pnpm schemas:test`（型検査は `pnpm schemas:typecheck`） | 本文の形の検査と誤りのときのメッセージ、API の一覧、OpenAPI の文書 |
 | E2E | Playwright（Chromium） | `apps/web/e2e/smoke.test.ts`、ユースケースの通しは `apps/web/e2e/usecases/` | `pnpm web:e2e` | 全ルートが実ブラウザで例外なく描画できることと、ユースケースの主な流れが画面だけで通ること（下の「ユースケースの E2E」） |
 
 - `pages.test.tsx` は `shared/routes/routes.ts` を走査して全ルートを描画する。ルートを追加すると自動的に対象になるので、ページ固有の操作テストだけを個別に書く
@@ -80,8 +80,8 @@ expect(toDictionaryForm('扉を破壊する')).toBe('扉を破壊する'); // �
 
 [中核のユースケース](../../architecture/use-cases.md)（PL-1・PL-2 など）を画面だけでなぞる通しを、`apps/web/e2e/usecases/` に置く。ユースケースごとの結果は、デプロイが E2E の後に作るページ（[テストレポート](../../architecture/test-report.md)）で見られる。ページの中身・状態の意味はテストレポートのページが正。ここには書き方と、検査で止めるものを書く。
 
-- **紐づけはテストの側に書く。** テストに Playwright のタグ（`{ tag: ['@SC-1', '@SC-2'] }`）を付け、テストの中を `test.step('SC-1 下書きを作る', …)` のようにユースケースごとのステップに分ける。タグ＝確かめるつもりのユースケース（手前で落ちても結果に残る）、ステップ＝実際に通ったか。use-cases.md は触らない
-- **ステップの題は `<ID><空白><自由な説明>`**。ID の後ろの文言はユースケースの名前と一致しなくてよい。ID の付かない下ごしらえのステップ（セッションを始める等、補完の業務領域）は ID を付けずに書いてよい（ページには出ない）。同じ ID のステップは、1本のテストに1つだけ書く（走らなかったステップは結果に記録されないので、同じ ID が2つあると、1つ目が通っただけで「確認済」に見える。順が入り組むときは、ステップの並びのほうを組み直す）
+- **紐づけはテストの側に書く。** テストに Playwright のタグ（`{ tag: ['@PL-1', '@PL-2'] }`）を付け、テストの中を `test.step('PL-1 手札を出す', …)` のようにユースケースごとのステップに分ける。タグ＝確かめるつもりのユースケース（手前で落ちても結果に残る）、ステップ＝実際に通ったか。use-cases.md は触らない
+- **ステップの題は `<ID><空白><自由な説明>`**。ID の後ろの文言はユースケースの名前と一致しなくてよい。ID の付かない下ごしらえのステップ（キャラクターを作る等、補完の業務領域）は ID を付けずに書いてよい（ページには出ない）。同じ ID のステップは、1本のテストに1つだけ書く（走らなかったステップは結果に記録されないので、同じ ID が2つあると、1つ目が通っただけで「確認済」に見える。順が入り組むときは、ステップの並びのほうを組み直す）
 - **最後の確かめ（コンソールの誤りが無いこと）は、最後の ID のステップの中に置く。** ステップの外で落ちると、どのユースケースのせいか分からない
 - **画面の状態はメモリにしか無く、リロードで消える。** 続けて行う操作は1本のテストにしてステップで分け、`page.goto` は最初の1回だけにする。あとは画面内のリンクか `location.hash` で移り、移った先にしか無い要素を待って確かめる（「テストの独立性」）
 - **1つの `e2e/usecases/` のファイルには、ユースケースのテストを1本だけ置く。** 通しのなかで細かい分岐まで確かめない（それは Vitest）。ページの「確認済」は、タグを付けたステップの主な流れ（正常パス）を確認したという意味にとどまる
@@ -94,7 +94,7 @@ expect(toDictionaryForm('扉を破壊する')).toBe('扉を破壊する'); // �
 
 ```ts
 // biome-ignore lint/suspicious/noSkippedTests: 不安定なため。直す要望は annotation
-test.skip('GM が描写を書いて…', {
+test.skip('手札を出してから提案する…', {
   tag: ['@PL-1', '@PL-2'],
   annotation: { type: 'backlog', description: 'docs/backlog/<直す要望>.md' },
 }, async ({ page }) => { /* 本文は消さずに残す */ });
@@ -110,9 +110,9 @@ test.skip('GM が描写を書いて…', {
 
 検査（`scripts/check-usecase-tags.mjs`。`pnpm docs:build` の最後。pre-push・CI でも止まる）が止めるもの：
 
-- 全 E2E で：use-cases.md の表に無い ID のタグ・ステップ、ID の形に似て形の違うタグ・ステップ（小文字 `@sc-1`）。ID でないタグ（`@slow` など）は見ない
+- 全 E2E で：use-cases.md の表に無い ID のタグ・ステップ、ID の形に似て形の違うタグ・ステップ（小文字 `@pl-1`）。ID でないタグ（`@slow` など）は見ない
 - `e2e/usecases/` の外（smoke）で：`test.skip`・`test.fixme`・`test.describe.skip`・直す要望の注記（抑制コメントがあっても止める。smoke が落ちるのは画面の不具合の合図なので、スキップで逃がさない）
-- `e2e/usecases/` で：タグにあってステップに無い ID／その逆、`test.step` の最初の引数が文字列の直書きでない（テンプレート文字列・変数）、題の中のタグ（`test('… @SC-1')`）・`test.describe` へのタグ（静的に読めない）、宣言の形でない `test.skip`・`test.fixme`・`test.only`・`test.fail`・`test.slow`・`test.step.skip`・`expect.soft`（skip したステップは結果で「確認済」に見えるため）、同じ ID のステップが複数、1ファイルに `test(` と宣言の `test.skip(` が合わせて2本以上。CI では `forbidOnly` も効く
+- `e2e/usecases/` で：タグにあってステップに無い ID／その逆、`test.step` の最初の引数が文字列の直書きでない（テンプレート文字列・変数）、題の中のタグ（`test('… @PL-1')`）・`test.describe` へのタグ（静的に読めない）、宣言の形でない `test.skip`・`test.fixme`・`test.only`・`test.fail`・`test.slow`・`test.step.skip`・`expect.soft`（skip したステップは結果で「確認済」に見えるため）、同じ ID のステップが複数、1ファイルに `test(` と宣言の `test.skip(` が合わせて2本以上。CI では `forbidOnly` も効く
 - `e2e/usecases/` のスキップで：直す要望の注記が無い・2つ以上ある、`description` が `docs/backlog/<名前>.md`（`<名前>` は `/`・`\` を含まず、`index` でない）の形でない、要望が実在しない・開いていない（未着手・検討中・進行中・判断待ちでない）、要望の `trace.usecases` にスキップしたテストのタグの UC が無い、直書きでない注記。スキップしていないテストの直す要望の注記と、次の文が宣言の `test.skip(` でない `noSkippedTests` の抑制コメント（スキップを外した後の消し忘れ）
 - 通ったときのメッセージに、スキップ中のテストの数が出る
 

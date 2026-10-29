@@ -13,8 +13,6 @@
       "!**/node_modules",
       "!docs/.vitepress/cache",
       "!docs/.vitepress/dist",
-      "!docs/public/preview",
-      "!docs/public/teaser",
       "!apps/web/public/mockServiceWorker.js",
       "!pnpm-lock.yaml",
       "!.claude/skills/react-best-practices"
@@ -646,17 +644,7 @@
         "apps/web/src/pages/*.ts",
         "apps/web/src/pages/*.tsx",
         "apps/web/src/pages/*/*.ts",
-        "apps/web/src/pages/*/*.tsx",
-        "apps/web/src/pages/pl/*/*.ts",
-        "apps/web/src/pages/pl/*/*.tsx",
-        "apps/web/src/pages/gm/*/*.ts",
-        "apps/web/src/pages/gm/*/*.tsx",
-        "apps/web/src/pages/creator/*/*.ts",
-        "apps/web/src/pages/creator/*/*.tsx",
-        "apps/web/src/pages/rulebook/*/*.ts",
-        "apps/web/src/pages/rulebook/*/*.tsx",
-        "apps/web/src/pages/admin/*/*.ts",
-        "apps/web/src/pages/admin/*/*.tsx"
+        "apps/web/src/pages/*/*.tsx"
       ],
       "linter": {
         "rules": {
@@ -726,43 +714,6 @@
       }
     },
     {
-      "includes": [
-        "packages/schemas/src/card-pool/**",
-        "packages/schemas/src/characters/**",
-        "packages/schemas/src/library/**",
-        "packages/schemas/src/me/**",
-        "packages/schemas/src/recruitments/**",
-        "packages/schemas/src/sessions/**",
-        "packages/schemas/src/scenarios/**"
-      ],
-      "linter": {
-        "rules": {
-          "style": {
-            "noRestrictedImports": {
-              "level": "error",
-              "options": {
-                "patterns": [
-                  {
-                    "group": [
-                      "../**",
-                      "./../**",
-                      "@cartagraph/schemas",
-                      "@cartagraph/schemas/**",
-                      "!../endpoint/**",
-                      "!./../endpoint/**",
-                      "!../body/**",
-                      "!./../body/**"
-                    ],
-                    "message": "URL の区切りごとのディレクトリが import してよい先は endpoint/・body/ と @cartagraph/domain・zod だけ（docs/process/rules/architecture.md「packages/schemas の中の置き場所」）"
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    {
       "includes": ["packages/schemas/src/api/**"],
       "linter": {
         "rules": {
@@ -780,23 +731,9 @@
                       "!../body/**",
                       "!./../body/**",
                       "!../endpoint/**",
-                      "!./../endpoint/**",
-                      "!../card-pool/**",
-                      "!./../card-pool/**",
-                      "!../characters/**",
-                      "!./../characters/**",
-                      "!../library/**",
-                      "!./../library/**",
-                      "!../me/**",
-                      "!./../me/**",
-                      "!../recruitments/**",
-                      "!./../recruitments/**",
-                      "!../sessions/**",
-                      "!./../sessions/**",
-                      "!../scenarios/**",
-                      "!./../scenarios/**"
+                      "!./../endpoint/**"
                     ],
-                    "message": "api/ が import してよい先は、URL の区切りごとのディレクトリ・endpoint/・body/ と @cartagraph/domain・zod だけ（docs/process/rules/architecture.md「packages/schemas の中の置き場所」）"
+                    "message": "api/ が import してよい先は、URL の区切りごとのディレクトリ（いまは無い。足したらここに許可を足す）・endpoint/・body/ と @cartagraph/domain・zod だけ（docs/process/rules/architecture.md「packages/schemas の中の置き場所」）"
                   }
                 ]
               }

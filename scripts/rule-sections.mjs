@@ -1,6 +1,6 @@
 // ルールのページ（docs/cartagraph/）の節（##・###）を読み、Vitest のタグの一覧と、対象外の一覧（docs/architecture/rule-test-exclusions.md）を返す。
 // 3パッケージの Vitest の設定（packages/*/vitest.config.ts・apps/web/vite.config.ts）が test.tags に渡す。
-// 結果のページ（build-rule-test-report.mjs）と対象外の検査（check-rule-test-exclusions.mjs）も共用する。
+// トレースのページ（build-trace-report.mjs）と、節ごとの結果の計算（build-rule-test-report.mjs）も共用する。
 // 書き方の正は docs/process/rules/testing.md「ルールのテストのタグ」。
 //
 // 設定ファイルから読まれる（Vite が設定ごとバンドルする）ので、Node が解決できない import をしない（apps/web/vite/ と同じ制約）。
@@ -167,10 +167,12 @@ export function isExcluded(section, exclusions) {
   return findExclusion(section, exclusions) !== undefined;
 }
 
-/** Vitest の設定の test.tags に渡す一覧。対象外の節は入れない（付けたテストは「not defined」で落ちる） */
-export function vitestTags() {
-  const exclusions = readExclusions();
-  return readRuleSections()
+/**
+ * Vitest の設定の test.tags に渡す一覧。対象外の節は入れない（付けたテストは「not defined」で落ちる）。
+ * 引数はテストで差し替える
+ */
+export function vitestTags(sections = readRuleSections(), exclusions = readExclusions()) {
+  return sections
     .filter((s) => !isExcluded(s, exclusions))
     .map((s) => ({ name: s.tag, description: `${s.pageTitle}「${s.heading}」` }));
 }

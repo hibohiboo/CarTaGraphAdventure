@@ -18,7 +18,7 @@ gh auth status        # GitHub CLI にログインしているか
 git switch main && git pull --ff-only     # main を最新にする
 git status                                 # 作業ツリーがきれいか確かめる
 node scripts/check-main-ci.mjs             # main の最新の CI が失敗していないか（失敗なら先に直す）
-node scripts/branch-id.mjs new feat <機能名>   # 次の id で作業ブランチを切る（例：feat/P12-scenario-copy）
+node scripts/branch-id.mjs new feat <機能名>   # 次の id で作業ブランチを切る（例：feat/P12-play-card）
 ```
 
 - フル・ライトとも、作業は id 付きのブランチで行う（[適用範囲](index.md#適用範囲フルとライト)）。main へのコミットは pre-commit が止める。
@@ -38,7 +38,7 @@ pnpm schemas:typecheck && pnpm schemas:test           # packages/schemas を触�
 pnpm docs:build                                        # docs/ を触ったとき
 pnpm tools:test                                        # scripts/・.claude/hooks/ を触ったとき
 pnpm docs:build && pnpm api:docs                       # API の一覧・応答の形を触ったとき
-pnpm web:test -- <ファイル名の一部>                    # テストを絞るとき（例：scenarioDrafts）
+pnpm web:test -- <ファイル名の一部>                    # テストを絞るとき（例：pages）
 ```
 
 画面をブラウザで確かめるとき：

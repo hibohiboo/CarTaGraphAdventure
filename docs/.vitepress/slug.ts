@@ -3,7 +3,7 @@
  * ハイフン・空白以外（括弧・中黒・全角記号など）を消して、空白をハイフンにする。Unicode の正規化はしない。
  * VitePress 既定の規則は NFKD 正規化で濁点を分解するため、「タグ」のような見出しへのリンクが
  * ブラウザで飛ばない。GitHub 上で読んでもサイトで読んでも同じリンクで飛べるようにする
- * （村スタート冒険者キャンペーン C5。リンク先の見出しの実在は scripts/check-doc-anchors.mjs で検査する）。
+ * （リンク先の見出しの実在は scripts/check-doc-anchors.mjs で検査する）。
  * サイトの設定（config.mts）と、ダッシュボードのデータローダー（decisions.data.ts）で共有する
  */
 export const githubSlug = (heading: string) =>

@@ -58,12 +58,7 @@ Biome の組み込みのルールに無い検査を、GritQL のプラグイン�
 
 ## 検査の対象から外しているファイル
 
-`files.includes` の `!` で、Biome の検査（lint・整形）から丸ごと外している。ビルドの出力・依存・自動生成のファイルのほかに、次の2つを外している。
-
-| 対象 | 理由 |
-|---|---|
-| `docs/public/preview/` | HTML/CSS だけの使い捨ての UI 試作。React 化したら消すもので、コードとして保守しない |
-| `docs/public/teaser/` | ティザー映像の HTML 1枚で、版ごとに丸ごと作り直す（直さない）。インラインの script を検査すると、アプリのコード向けの上限（複雑さなど）に当たる |
+`files.includes` の `!` で、Biome の検査（lint・整形）から丸ごと外している。外しているのは、ビルドの出力・依存・自動生成のファイルと、Vercel Labs の配布物をそのまま取り込んだ `.claude/skills/react-best-practices` だけ。
 
 ## 入れていないもの
 

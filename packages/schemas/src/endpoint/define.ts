@@ -1,5 +1,5 @@
 // API の一覧の1項目（メソッド・パス・本文・状態コードごとの応答）の定義（docs/plans/2026-10-11-APIドキュメント.md G2）。
-// 一覧から OpenAPI の文書を作り（api/openapi.ts）、モック（MSW）の応答が一覧どおりかを検査する（check.ts）。
+// 一覧から OpenAPI の文書を作る（api/openapi.ts）。
 
 import { z } from 'zod';
 import type { AnyRequestBody } from '../body/parse';

@@ -1,91 +1,75 @@
-// check-terms.mjs の、旧称の検出（pnpm tools:test）
+// check-terms.mjs の、旧称の検出（pnpm tools:test）。本物の一覧はまだ空なので、見本の一覧を渡して確かめる
 
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { findOldTerms, isChecked } from './check-terms.mjs';
 
+const NOTES = [/^docs\/notes\//];
+const terms = [
+  ['山札', '「手札」（docs/glossary.md）'],
+  ['要求', '「提案」（docs/glossary.md）'],
+  ['場面', '「シーン」（docs/glossary.md）', NOTES],
+];
+
 describe('findOldTerms', () => {
   it('旧称を、ファイル・行・今の名前つきで見つける', () => {
-    const found = findOldTerms([
-      { path: 'docs/a.md', text: '一行目\nGMは共有ライブラリから選ぶ\n選択肢の行き先' },
-      { path: 'apps/web/src/b.tsx', text: "const s = 'シナリオ作成者';" },
-    ]);
+    const found = findOldTerms(
+      [
+        { path: 'docs/a.md', text: '一行目\n山札から出す\nGM への要求' },
+        { path: 'apps/web/src/b.tsx', text: "const s = '山札';" },
+      ],
+      terms,
+    );
     assert.deepEqual(
       found.map((f) => [f.path, f.line, f.term]),
       [
-        ['docs/a.md', 2, '共有ライブラリ'],
-        ['docs/a.md', 3, '行き先'],
-        ['apps/web/src/b.tsx', 1, 'シナリオ作成者'],
+        ['docs/a.md', 2, '山札'],
+        ['docs/a.md', 3, '要求'],
+        ['apps/web/src/b.tsx', 1, '山札'],
       ],
     );
-    assert.match(found[0].message, /シナリオ集.*共有設定/);
+    assert.match(found[0].message, /手札/);
   });
 
-  it('今の名前（結末のノード・シナリオ製作者・移り先）は見つけない', () => {
-    assert.deepEqual(
-      findOldTerms([{ path: 'docs/a.md', text: '結末のノード、シナリオ製作者、移り先、結末タグ' }]),
-      [],
-    );
+  it('今の名前は見つけない', () => {
+    assert.deepEqual(findOldTerms([{ path: 'docs/a.md', text: '手札・提案・シーン' }], terms), []);
   });
 
   it('1行に複数の旧称があれば、全部見つける', () => {
-    const found = findOldTerms([{ path: 'x.md', text: '結末ノードと配る前提タグ' }]);
+    const found = findOldTerms([{ path: 'x.md', text: '山札と要求' }], terms);
     assert.deepEqual(
       found.map((f) => f.term),
-      ['結末ノード', '配る前提タグ'],
+      ['山札', '要求'],
     );
+  });
+
+  it('本物の一覧（いまは空）では何も見つけない', () => {
+    assert.deepEqual(findOldTerms([{ path: 'docs/a.md', text: '山札と要求と場面' }]), []);
   });
 });
 
 describe('findOldTerms：語ごとの除外', () => {
-  // 「旅人」「探索者」は、経緯を書いたノートなどには正当に残る（冒険者だけにする C3）
   it('除外のパスではその語を見つけず、ほかのパスでは見つける', () => {
-    const text = '旅人・探索者・冒険者';
-    assert.deepEqual(findOldTerms([{ path: 'docs/notes/scenario-type.md', text }]), []);
+    assert.deepEqual(findOldTerms([{ path: 'docs/notes/a.md', text: '場面' }], terms), []);
     assert.deepEqual(
-      findOldTerms([{ path: 'docs/cartagraph/check.md', text }]).map((f) => f.term),
-      ['旅人', '探索者'],
+      findOldTerms([{ path: 'docs/cartagraph/a.md', text: '場面' }], terms).map((f) => f.term),
+      ['場面'],
     );
   });
 
   it('同じファイルでも、除外されていない別の語は見つける', () => {
-    const found = findOldTerms([
-      { path: 'docs/notes/a.md', text: '探索者は共有ライブラリから選ぶ' },
-    ]);
+    const found = findOldTerms([{ path: 'docs/notes/a.md', text: '場面で山札' }], terms);
     assert.deepEqual(
       found.map((f) => f.term),
-      ['共有ライブラリ'],
+      ['山札'],
     );
-  });
-
-  it('除外を持たない語は、どのパスでも見つける', () => {
-    const found = findOldTerms([{ path: 'docs/notes/a.md', text: '結末ノード' }]);
-    assert.deepEqual(
-      found.map((f) => f.term),
-      ['結末ノード'],
-    );
-  });
-
-  it('「探索者向けの判定ルール」は「探索者」の1件だけで報告し、案内に「判定ルール」を含める', () => {
-    const found = findOldTerms([{ path: 'docs/a.md', text: '探索者向けの判定ルール' }]);
-    assert.deepEqual(
-      found.map((f) => f.term),
-      ['探索者'],
-    );
-    assert.match(found[0].message, /判定ルール/);
-  });
-
-  it('「参照するデータ種別のタグ」は、ノートでは見つけず、仕様では見つける', () => {
-    const text = '参照するデータ種別のタグ';
-    assert.deepEqual(findOldTerms([{ path: 'docs/notes/a.md', text }]), []);
-    assert.equal(findOldTerms([{ path: 'docs/cartagraph/a.md', text }]).length, 1);
   });
 });
 
 describe('isChecked', () => {
-  it('docs・apps・packages・scenarios と入口の文書を見る', () => {
+  it('docs・apps・packages と入口の文書を見る', () => {
     for (const p of [
-      'docs/cartagraph/scenario-flow.md',
+      'docs/cartagraph/index.md',
       'apps/web/src/a.tsx',
       'packages/domain/src/a.ts',
       'AGENTS.md',

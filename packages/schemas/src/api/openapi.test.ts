@@ -115,10 +115,6 @@ describe('OpenAPI の文書', () => {
     expect((doc.tags as { name: string }[]).map((t) => t.name)).toEqual(['items']);
   });
 
-  it('仮ルールを書いた型が無ければ、冒頭に一覧を出さない', () => {
-    expect((doc.info as { description: string }).description).not.toContain('## 仮ルール');
-  });
-
   it('operationId は重複しない', () => {
     const ids = Object.values(paths).flatMap((p) => Object.values(p).map((o) => o.operationId));
     expect(new Set(ids).size).toBe(ids.length);
