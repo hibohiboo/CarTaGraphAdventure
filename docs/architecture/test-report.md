@@ -59,4 +59,4 @@ main への push ごとに、デプロイ（`.github/workflows/deploy.yml`）が
 - 枠の色は業務領域・コンテキスト。要素の中の文字（「落ちた」など）にも状態を出し、色だけに頼らない
 - ページはデプロイ時に作る（`scripts/build-trace-report.mjs`）。`trace` と表の列の検査は `pnpm docs:build`（`scripts/check-trace.mjs`）。決めた理由は[前のリポジトリのデザイナーノート](https://github.com/hibohiboo/CarTaGraphFantasy/blob/main/docs/notes/architecture/test-report.md)
 
-Vitest の HTML レポートを手元で作るときは `pnpm test:report`（各パッケージの `vitest-report/` に HTML、`vitest-results/` に JSON を書く。git には載せない）。レポートを dist に写すのは `scripts/copy-test-reports-to-pages.mjs`。テストの書き方は[テストのルール](../process/rules/testing.md)。
+Vitest の HTML レポートを手元で作るときは `pnpm test:report`（各パッケージの `.vitest/` に HTML、`vitest-results/` に JSON を書く。git には載せない。Vitest 5 は HTML の出力先を指定できない）。レポートを dist に写す（`.vitest/` を Pages 上の `vitest-report/<パッケージ>/` に置く）のは `scripts/copy-test-reports-to-pages.mjs`。テストの書き方は[テストのルール](../process/rules/testing.md)。
