@@ -357,10 +357,10 @@ describe('T12: 結果が読めない', () => {
 describe('T13: usecase-report・rule-test-report と同じ状態', () => {
   it('UC の状態が computeStates と同じ（同じ fixtures。スキップ入りの実物も）', () => {
     const cases = [
-      ['playwright-results.json', ['SC-1', 'SC-2', 'SC-3']],
-      ['playwright-results-skipped.json', ['PL-1', 'PL-2', 'SC-1']],
+      ['playwright-results.json', ['SC-1', 'SC-2', 'SC-3'], ['SC-1', 'failed']],
+      ['playwright-results-skipped.json', ['PL-1', 'PL-2', 'SC-1'], ['PL-1', 'skipped']],
     ];
-    for (const [file, ids] of cases) {
+    for (const [file, ids, [pinnedId, pinnedState]] of cases) {
       const json = fixture(file);
       const useCases = ids.map((id) => uc(id));
       const graph = buildGraph(inputs({ useCases, e2eJson: json, routes: [] }));
@@ -369,7 +369,7 @@ describe('T13: usecase-report・rule-test-report と同じ状態', () => {
         const s = expected.get(u.id).state;
         assert.equal(node(graph, `uc:${u.id}`).state, s === 'stopped' ? 'failed' : s, u.id);
       }
-      if (file.includes('skipped')) assert.equal(node(graph, 'uc:PL-1').state, 'skipped');
+      assert.equal(node(graph, `uc:${pinnedId}`).state, pinnedState, file);
     }
   });
 

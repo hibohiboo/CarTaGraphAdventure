@@ -61,43 +61,43 @@ describe('T1: 読む', () => {
 });
 
 describe('T2: 形の違いは、ファイル名と理由の入った例外', () => {
-  const bad = (traceLines, reason) =>
-    assert.throws(
-      () => parseTrace(doc(traceLines), FILE),
-      (e) => e.message.includes(FILE) && reason.test(e.message),
-    );
+  const parse = (traceLines) => () => parseTrace(doc(traceLines), FILE);
+  const rejects = (reason) => (e) => e.message.includes(FILE) && reason.test(e.message);
 
   it('ブロック形式のリスト', () => {
-    bad('trace:\n  usecases:\n    - SC-1', /フロー形式/);
+    assert.throws(parse('trace:\n  usecases:\n    - SC-1'), rejects(/フロー形式/));
   });
   it('none とリストの両方', () => {
-    bad('trace:\n  none: 理由\n  usecases: [SC-1]', /none.*リスト|リスト.*none/);
+    assert.throws(
+      parse('trace:\n  none: 理由\n  usecases: [SC-1]'),
+      rejects(/none.*リスト|リスト.*none/),
+    );
   });
   it('全部が空・何も書いていない', () => {
-    bad('trace:\n  usecases: []\n  screens: []', /全部が空/);
-    bad('trace:\n  usecases:', /フロー形式/);
+    assert.throws(parse('trace:\n  usecases: []\n  screens: []'), rejects(/全部が空/));
+    assert.throws(parse('trace:\n  usecases:'), rejects(/フロー形式/));
   });
   it('知らないキー', () => {
-    bad('trace:\n  usecase: [SC-1]', /知らないキー.*usecase/);
+    assert.throws(parse('trace:\n  usecase: [SC-1]'), rejects(/知らないキー.*usecase/));
   });
   it('trace の下にインデントの無い行・インデントの無い値', () => {
-    bad('trace:\nusecases: [SC-1]', /インデント/);
-    bad('trace: [SC-1]', /インデント/);
+    assert.throws(parse('trace:\nusecases: [SC-1]'), rejects(/インデント/));
+    assert.throws(parse('trace: [SC-1]'), rejects(/インデント/));
   });
   it('# と引用符（YAML と読み方が食い違う）', () => {
-    bad('trace:\n  none: 理由 #メモ', /#/);
-    bad("trace:\n  none: 'x'", /引用符/);
-    bad('trace:\n  screens: ["/home"]', /引用符/);
+    assert.throws(parse('trace:\n  none: 理由 #メモ'), rejects(/#/));
+    assert.throws(parse("trace:\n  none: 'x'"), rejects(/引用符/));
+    assert.throws(parse('trace:\n  screens: ["/home"]'), rejects(/引用符/));
   });
   it('none の理由が空', () => {
-    bad('trace:\n  none:', /理由が空/);
-    bad('trace:\n  none:   ', /理由が空/);
+    assert.throws(parse('trace:\n  none:'), rejects(/理由が空/));
+    assert.throws(parse('trace:\n  none:   '), rejects(/理由が空/));
   });
   it('リストの中身が空の項目・閉じていない', () => {
-    bad('trace:\n  usecases: [SC-1, ]', /空の項目/);
-    bad('trace:\n  usecases: [SC-1', /フロー形式/);
+    assert.throws(parse('trace:\n  usecases: [SC-1, ]'), rejects(/空の項目/));
+    assert.throws(parse('trace:\n  usecases: [SC-1'), rejects(/フロー形式/));
   });
   it('同じキーが2回', () => {
-    bad('trace:\n  usecases: [SC-1]\n  usecases: [SC-2]', /2回/);
+    assert.throws(parse('trace:\n  usecases: [SC-1]\n  usecases: [SC-2]'), rejects(/2回/));
   });
 });

@@ -32,7 +32,7 @@ output=$(pnpm exec biome check --staged --write 2>&1)
 status=$?
 
 if [ $status -ne 0 ] && printf '%s' "$output" | grep -q 'No files were processed in the specified paths'; then
-  # Biome は Markdown など対応外の拡張子しかステージされていないとき
+  # Biome は yml・sh など対応外の拡張子しかステージされていないとき
   # 「処理対象が0件」を失敗として扱う。docs のみのコミットまで止めては
   # 困るので、これだけは無害として通す（本物のlint違反はここを通らない）。
   # Biome のエラー表示は出さない（毎回のノイズになり、本物の指摘が埋もれるため）。

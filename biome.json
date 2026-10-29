@@ -31,6 +31,11 @@
       "trailingCommas": "all"
     }
   },
+  "markdown": {
+    "formatter": {
+      "enabled": false
+    }
+  },
   "linter": {
     "enabled": true,
     "rules": {
@@ -98,6 +103,42 @@
           },
           "complexity": {
             "noExcessiveLinesPerFunction": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "**/*.test.ts",
+        "**/*.test.tsx",
+        "**/*.test.mjs",
+        "apps/web/src/test/**",
+        "apps/web/e2e/**"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "useConsistentTestIt": "error"
+          },
+          "suspicious": {
+            "useExpect": "error",
+            "noConditionalExpect": "error"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["apps/web/e2e/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "useConsistentTestIt": {
+              "level": "error",
+              "options": {
+                "function": "test",
+                "withinDescribe": "test"
+              }
+            }
           }
         }
       }
