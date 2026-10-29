@@ -13,7 +13,7 @@ Claude Code は `CLAUDE.md` からこのファイルを読み込む。
 - TypeScript のみ。pnpm workspace によるモノレポ（Node 24 / pnpm 11）
 - `docs/` … VitePress 製の設計仕様書サイト（GitHub Pages で公開）
 - `apps/web/` … Vite + React 19 + react-router（Hashルーター）
-  - **バックエンドは未実装。** MSW も持ち込んでいない
+  - **バックエンドは未実装。** MSW は依存と worker（`public/mockServiceWorker.js`）まで。ハンドラ（`@/mocks`）と起動は、画面から API を叩く最初の要望で作る
 - `packages/domain/` … ドメイン。`docs/` の用語をそのまま型に落としたもの
 - `packages/schemas/` … API の一覧（本文と応答の形・状態コード）とリクエストの本文のスキーマ（zod）。ここから OpenAPI の文書（API ドキュメント）を作る
 - テスト … Vitest（`apps/web/src/test/`、`packages/domain/src/**/*.test.ts`、`packages/schemas/src/**/*.test.ts`）。E2E は Playwright（`apps/web/e2e/`）

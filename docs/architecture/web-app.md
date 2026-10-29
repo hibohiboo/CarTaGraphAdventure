@@ -9,7 +9,7 @@ API ドキュメント：`https://hibohiboo.github.io/CarTaGraphAdventure/api-do
 ## 位置づけ
 
 - **バックエンドはまだ作らない。** シナリオはリポジトリの JSON を静的に読み込む。書き込みは、ローカルの開発サーバーの口（提案を要望のファイルに書く。playable-scene で作る）だけ
-- MSW は持ち込んでいない。画面から API を叩くようになったら足す（[ロードマップのデザイナーノート](../notes/roadmap.md)）
+- MSW は、依存と worker（`apps/web/public/mockServiceWorker.js`。`msw init` が作る。検査の対象外）まで持ち込んだ。ハンドラ（`@/mocks`）と `main.tsx` での起動は、画面から API を叩くようになったら足す（[ロードマップのデザイナーノート](../notes/roadmap.md)）
 
 ## ディレクトリ
 

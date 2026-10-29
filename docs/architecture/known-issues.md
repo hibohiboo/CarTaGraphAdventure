@@ -14,6 +14,10 @@
 
 いまは無い。
 
+## 依存
+
+- mermaid を 11 に留めている（P3、2026-10-30）。`vitepress-plugin-mermaid` 2.0.17（最新）の peer が `mermaid` `10 || 11` で、12 は警告になる。プラグインが 12 を peer で許したら上げる
+
 ## 見送った軽微な指摘（P2）
 
 レビューの P2 を1行で記録する（[レビューのルール](../process/rules/review.md)）。
@@ -21,7 +25,6 @@
 - P1 の持ち込み（2026-10-30）：`.gitignore` に、置いていった `rule:report`・`/rule-test-report/`・`scenarioFilePlugin`・`scenarios/.*.tmp` の行が残っている
 - 同：`.claude/agents/spec-reviewer.md` が、持ち込んでいない `rulebook.ts` を確かめる手順を持っている
 - 同：`scripts/check-screens.mjs` の `NOT_IN_DIAGRAM = ['admin']` が、元のルートのグループのまま
-- 同：`packages/schemas` の `body/parse.ts` のコメントが MSW を前提にしている（MSW を入れるときに合わせる）
 - 同：使われていない依存（`packages/domain` の `zod`、`packages/schemas` の `@cartagraph/domain`、`apps/web` の `@cartagraph/domain`・`@testing-library/user-event`）と、`apps/web/tsconfig.json` の include の無いディレクトリ `vite`
 - 同：`scripts/build-trace-report.test.mjs:530` の、R8 で置き換えた通しの確かめ（`req:foundation` は trace が none で、skipped になりえない）。単体は :453 が確かめている
 - 同：`scripts/check-doc-anchors.mjs` は、`rulebook.ts` が無ければ黙って 0 件で通る（置き場所を変えると検査が外れたままになる）
@@ -35,4 +38,3 @@
 - 同：`docs/process/rules/review.md:18`・`testing.md:49` が、まだ無い playable-scene の書き込みの口の規則を持っている
 - 同（2回目）：`scripts/` のテストのデータ（`check-events`・`check-trace`・`build-trace-report`・`build-usecase-report`・`check-screens` などの `*.test.mjs`）に、元のゲームの語（GM・セッション・シナリオの公開・自動戦闘）が残っている。見本なので動きには関わらない
 - 同（2回目）：`docs/backlog/index.md` の trace の例の `screens: [/]` は、PL-2 の画面（試験のシーン）と合っていない。シーンの画面を作ったら合わせる
-- 同（2回目）：`static-analysis.md` の「検査の対象から外しているファイル」は、MSW を入れたら `mockServiceWorker.js` を足す
