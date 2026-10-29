@@ -38,3 +38,8 @@
 - 同：`docs/process/rules/review.md:18`・`testing.md:49` が、まだ無い playable-scene の書き込みの口の規則を持っている
 - 同（2回目）：`scripts/` のテストのデータ（`check-events`・`check-trace`・`build-trace-report`・`build-usecase-report`・`check-screens` などの `*.test.mjs`）に、元のゲームの語（GM・セッション・シナリオの公開・自動戦闘）が残っている。見本なので動きには関わらない
 - 同（2回目）：`docs/backlog/index.md` の trace の例の `screens: [/]` は、PL-2 の画面（試験のシーン）と合っていない。シーンの画面を作ったら合わせる
+- P3 の実装レビュー（2026-10-30）：`scripts/copy-test-reports-to-pages.mjs` は `.vitest/` が無いと警告だけで exit 0 になる（テストが落ちてもデプロイは進める方針のため）。出力先がまた変わると、Pages にレポートが載らないまま CI が緑になる
+- 同：`scripts/check-usecase-tags.test.mjs` の `stops`・`bad` は、真なら `true`、偽なら失敗の文を返す形（`assert.equal(…, true)`）で、プランに書いた `assert.ok(….some(…))` を本文に置く形と違う（判定は同じ）
+- 同：`biome.json` のテストの override の `apps/web/e2e/**`・`src/test/**` は、テストでないヘルパーにも `useExpect` などがかかる（`expect` を持たないヘルパーは対象外で、いまは無害）
+- 同：`packages/schemas/src/body/parse.ts` のコメント「MSW のハンドラ。まだ無い」は、ハンドラを足したときに直す
+- 同：進化ログ（48件）と `docs/backlog/dependency-upgrade.md`（`useConsistentTestIt` 32件）の件数は、`smoke.test.ts` を含めるかの数え方の違い
