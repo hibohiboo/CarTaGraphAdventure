@@ -1,0 +1,865 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true,
+    "defaultBranch": "main"
+  },
+  "files": {
+    "includes": [
+      "**",
+      "!**/dist",
+      "!**/node_modules",
+      "!docs/.vitepress/cache",
+      "!docs/.vitepress/dist",
+      "!docs/public/preview",
+      "!docs/public/teaser",
+      "!apps/web/public/mockServiceWorker.js",
+      "!pnpm-lock.yaml",
+      "!.claude/skills/react-best-practices"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single",
+      "semicolons": "always",
+      "trailingCommas": "all"
+    }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "preset": "recommended",
+      "correctness": {
+        "noUnusedVariables": "error",
+        "noUnusedImports": "error",
+        "noNestedComponentDefinitions": "error",
+        "useHookAtTopLevel": "error"
+      },
+      "suspicious": {
+        "noConsole": "error",
+        "noSkippedTests": "error",
+        "noFocusedTests": "error",
+        "noImportCycles": "error"
+      },
+      "complexity": {
+        "noExcessiveCognitiveComplexity": {
+          "level": "error",
+          "options": {
+            "maxAllowedComplexity": 15
+          }
+        },
+        "noExcessiveLinesPerFunction": {
+          "level": "error",
+          "options": {
+            "maxLines": 200
+          }
+        },
+        "useMaxParams": {
+          "level": "error",
+          "options": {
+            "max": 4
+          }
+        }
+      },
+      "style": {
+        "noExcessiveLinesPerFile": {
+          "level": "error",
+          "options": {
+            "maxLines": 1000
+          }
+        }
+      }
+    },
+    "domains": {
+      "test": "all"
+    }
+  },
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
+  "overrides": [
+    {
+      "includes": ["**/*.test.ts", "**/*.test.tsx", "apps/web/src/test/**", "apps/web/e2e/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noNonNullAssertion": "off"
+          },
+          "complexity": {
+            "noExcessiveLinesPerFunction": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["**/*.vue"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noUnusedImports": "off",
+            "noUnusedVariables": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["scripts/**"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noConsole": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["packages/domain/src/**"],
+      "linter": {
+        "rules": {
+          "performance": {
+            "noBarrelFile": "error",
+            "noReExportAll": "error"
+          },
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": ["../**", "./../**", "@cartagraph/domain", "@cartagraph/domain/**"],
+                    "message": "表に無いディレクトリ はほかのディレクトリを import しない（docs/process/rules/architecture.md「packages/domain の中の置き場所」）"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["apps/web/src/**"],
+      "linter": {
+        "rules": {
+          "performance": {
+            "noBarrelFile": "error",
+            "noReExportAll": "error"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["apps/web/src/app/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "@/mocks",
+                      "@/mocks/**",
+                      "@/test",
+                      "@/test/**",
+                      "../**",
+                      "./../**",
+                      ".././**",
+                      "src",
+                      "src/**",
+                      "../..",
+                      "./../..",
+                      "@/*/../**",
+                      "@/./**",
+                      "@//**"
+                    ],
+                    "message": "app は層の外（mocks・test）を import しない。ほかの層は @/<層>/… で import する（docs/process/rules/architecture.md「依存の向き」）"
+                  },
+                  {
+                    "group": ["@cartagraph/schemas", "@cartagraph/schemas/**"],
+                    "message": "API のスキーマ（@cartagraph/schemas。本文と応答の型）を import してよいのは entities と mocks・test だけ（docs/process/rules/architecture.md「依存の向き」）"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["apps/web/src/pages/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "@/app",
+                      "@/app/**",
+                      "@/pages",
+                      "@/pages/**",
+                      "@/mocks",
+                      "@/mocks/**",
+                      "@/test",
+                      "@/test/**",
+                      "../../**",
+                      "./../../**",
+                      ".././**",
+                      "src",
+                      "src/**",
+                      "../..",
+                      "./../..",
+                      "@/*/../**",
+                      "@/./**",
+                      "@//**"
+                    ],
+                    "message": "pages が import してよいのは下の層（widgets・features・entities・shared）だけ。同じ層の別スライスは import しない。スライスの外は @/<層>/…、中は相対パス（docs/process/rules/architecture.md「依存の向き」）"
+                  },
+                  {
+                    "group": ["@cartagraph/schemas", "@cartagraph/schemas/**"],
+                    "message": "API のスキーマ（@cartagraph/schemas。本文と応答の型）を import してよいのは entities と mocks・test だけ（docs/process/rules/architecture.md「依存の向き」）"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["apps/web/src/widgets/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "@/app",
+                      "@/app/**",
+                      "@/pages",
+                      "@/pages/**",
+                      "@/widgets",
+                      "@/widgets/**",
+                      "@/mocks",
+                      "@/mocks/**",
+                      "@/test",
+                      "@/test/**",
+                      "../../**",
+                      "./../../**",
+                      ".././**",
+                      "src",
+                      "src/**",
+                      "../..",
+                      "./../..",
+                      "@/*/../**",
+                      "@/./**",
+                      "@//**"
+                    ],
+                    "message": "widgets が import してよいのは下の層（features・entities・shared）だけ。同じ層の別スライスは import しない。スライスの外は @/<層>/…、中は相対パス（docs/process/rules/architecture.md「依存の向き」）"
+                  },
+                  {
+                    "group": ["@cartagraph/schemas", "@cartagraph/schemas/**"],
+                    "message": "API のスキーマ（@cartagraph/schemas。本文と応答の型）を import してよいのは entities と mocks・test だけ（docs/process/rules/architecture.md「依存の向き」）"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["apps/web/src/features/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "@/app",
+                      "@/app/**",
+                      "@/pages",
+                      "@/pages/**",
+                      "@/widgets",
+                      "@/widgets/**",
+                      "@/features",
+                      "@/features/**",
+                      "@/mocks",
+                      "@/mocks/**",
+                      "@/test",
+                      "@/test/**",
+                      "../../**",
+                      "./../../**",
+                      ".././**",
+                      "src",
+                      "src/**",
+                      "../..",
+                      "./../..",
+                      "@/*/../**",
+                      "@/./**",
+                      "@//**"
+                    ],
+                    "message": "features が import してよいのは下の層（entities・shared）だけ。同じ層の別スライスは import しない。スライスの外は @/<層>/…、中は相対パス（docs/process/rules/architecture.md「依存の向き」）"
+                  },
+                  {
+                    "group": ["@cartagraph/schemas", "@cartagraph/schemas/**"],
+                    "message": "API のスキーマ（@cartagraph/schemas。本文と応答の型）を import してよいのは entities と mocks・test だけ（docs/process/rules/architecture.md「依存の向き」）"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["apps/web/src/entities/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "@/app",
+                      "@/app/**",
+                      "@/pages",
+                      "@/pages/**",
+                      "@/widgets",
+                      "@/widgets/**",
+                      "@/features",
+                      "@/features/**",
+                      "@/entities",
+                      "@/entities/**",
+                      "@/mocks",
+                      "@/mocks/**",
+                      "@/test",
+                      "@/test/**",
+                      "../../**",
+                      "./../../**",
+                      ".././**",
+                      "src",
+                      "src/**",
+                      "../..",
+                      "./../..",
+                      "@/*/../**",
+                      "@/./**",
+                      "@//**"
+                    ],
+                    "message": "entities が import してよいのは下の層（shared）だけ。同じ層の別スライスは import しない。スライスの外は @/<層>/…、中は相対パス（docs/process/rules/architecture.md「依存の向き」）"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["apps/web/src/shared/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "@/app",
+                      "@/app/**",
+                      "@/pages",
+                      "@/pages/**",
+                      "@/widgets",
+                      "@/widgets/**",
+                      "@/features",
+                      "@/features/**",
+                      "@/entities",
+                      "@/entities/**",
+                      "@/shared",
+                      "@/shared/**",
+                      "@/mocks",
+                      "@/mocks/**",
+                      "@/test",
+                      "@/test/**",
+                      "../../**",
+                      "./../../**",
+                      ".././**",
+                      "src",
+                      "src/**",
+                      "../..",
+                      "./../..",
+                      "@/*/../**",
+                      "@/./**",
+                      "@//**"
+                    ],
+                    "message": "shared はほかの層を import しない。shared の中は相対パスで import する（docs/process/rules/architecture.md「依存の向き」）"
+                  },
+                  {
+                    "group": ["@cartagraph/schemas", "@cartagraph/schemas/**"],
+                    "message": "API のスキーマ（@cartagraph/schemas。本文と応答の型）を import してよいのは entities と mocks・test だけ（docs/process/rules/architecture.md「依存の向き」）"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["apps/web/src/shared/*.ts", "apps/web/src/shared/*.tsx"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "@/app",
+                      "@/app/**",
+                      "@/pages",
+                      "@/pages/**",
+                      "@/widgets",
+                      "@/widgets/**",
+                      "@/features",
+                      "@/features/**",
+                      "@/entities",
+                      "@/entities/**",
+                      "@/shared",
+                      "@/shared/**",
+                      "@/mocks",
+                      "@/mocks/**",
+                      "@/test",
+                      "@/test/**",
+                      "../../**",
+                      "./../../**",
+                      ".././**",
+                      "src",
+                      "src/**",
+                      "../**",
+                      "./../**",
+                      "../..",
+                      "./../..",
+                      "@/*/../**",
+                      "@/./**",
+                      "@//**"
+                    ],
+                    "message": "層・グループのフォルダ・スライスの直下のファイルから、../ で外へ出る import はしない。そもそも直下にファイルを置かず、セグメント（ui・api・lib・model など）に入れる（docs/process/rules/architecture.md「依存の向き」）"
+                  },
+                  {
+                    "group": ["@cartagraph/schemas", "@cartagraph/schemas/**"],
+                    "message": "API のスキーマ（@cartagraph/schemas。本文と応答の型）を import してよいのは entities と mocks・test だけ（docs/process/rules/architecture.md「依存の向き」）"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "apps/web/src/entities/*.ts",
+        "apps/web/src/entities/*.tsx",
+        "apps/web/src/entities/*/*.ts",
+        "apps/web/src/entities/*/*.tsx"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "@/app",
+                      "@/app/**",
+                      "@/pages",
+                      "@/pages/**",
+                      "@/widgets",
+                      "@/widgets/**",
+                      "@/features",
+                      "@/features/**",
+                      "@/entities",
+                      "@/entities/**",
+                      "@/mocks",
+                      "@/mocks/**",
+                      "@/test",
+                      "@/test/**",
+                      "../../**",
+                      "./../../**",
+                      ".././**",
+                      "src",
+                      "src/**",
+                      "../**",
+                      "./../**",
+                      "../..",
+                      "./../..",
+                      "@/*/../**",
+                      "@/./**",
+                      "@//**"
+                    ],
+                    "message": "層・グループのフォルダ・スライスの直下のファイルから、../ で外へ出る import はしない。そもそも直下にファイルを置かず、セグメント（ui・api・lib・model など）に入れる（docs/process/rules/architecture.md「依存の向き」）"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "apps/web/src/widgets/*.ts",
+        "apps/web/src/widgets/*.tsx",
+        "apps/web/src/widgets/*/*.ts",
+        "apps/web/src/widgets/*/*.tsx"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "@/app",
+                      "@/app/**",
+                      "@/pages",
+                      "@/pages/**",
+                      "@/widgets",
+                      "@/widgets/**",
+                      "@/mocks",
+                      "@/mocks/**",
+                      "@/test",
+                      "@/test/**",
+                      "../../**",
+                      "./../../**",
+                      ".././**",
+                      "src",
+                      "src/**",
+                      "../**",
+                      "./../**",
+                      "../..",
+                      "./../..",
+                      "@/*/../**",
+                      "@/./**",
+                      "@//**"
+                    ],
+                    "message": "層・グループのフォルダ・スライスの直下のファイルから、../ で外へ出る import はしない。そもそも直下にファイルを置かず、セグメント（ui・api・lib・model など）に入れる（docs/process/rules/architecture.md「依存の向き」）"
+                  },
+                  {
+                    "group": ["@cartagraph/schemas", "@cartagraph/schemas/**"],
+                    "message": "API のスキーマ（@cartagraph/schemas。本文と応答の型）を import してよいのは entities と mocks・test だけ（docs/process/rules/architecture.md「依存の向き」）"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "apps/web/src/features/*.ts",
+        "apps/web/src/features/*.tsx",
+        "apps/web/src/features/*/*.ts",
+        "apps/web/src/features/*/*.tsx"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "@/app",
+                      "@/app/**",
+                      "@/pages",
+                      "@/pages/**",
+                      "@/widgets",
+                      "@/widgets/**",
+                      "@/features",
+                      "@/features/**",
+                      "@/mocks",
+                      "@/mocks/**",
+                      "@/test",
+                      "@/test/**",
+                      "../../**",
+                      "./../../**",
+                      ".././**",
+                      "src",
+                      "src/**",
+                      "../**",
+                      "./../**",
+                      "../..",
+                      "./../..",
+                      "@/*/../**",
+                      "@/./**",
+                      "@//**"
+                    ],
+                    "message": "層・グループのフォルダ・スライスの直下のファイルから、../ で外へ出る import はしない。そもそも直下にファイルを置かず、セグメント（ui・api・lib・model など）に入れる（docs/process/rules/architecture.md「依存の向き」）"
+                  },
+                  {
+                    "group": ["@cartagraph/schemas", "@cartagraph/schemas/**"],
+                    "message": "API のスキーマ（@cartagraph/schemas。本文と応答の型）を import してよいのは entities と mocks・test だけ（docs/process/rules/architecture.md「依存の向き」）"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "apps/web/src/pages/*.ts",
+        "apps/web/src/pages/*.tsx",
+        "apps/web/src/pages/*/*.ts",
+        "apps/web/src/pages/*/*.tsx",
+        "apps/web/src/pages/pl/*/*.ts",
+        "apps/web/src/pages/pl/*/*.tsx",
+        "apps/web/src/pages/gm/*/*.ts",
+        "apps/web/src/pages/gm/*/*.tsx",
+        "apps/web/src/pages/creator/*/*.ts",
+        "apps/web/src/pages/creator/*/*.tsx",
+        "apps/web/src/pages/rulebook/*/*.ts",
+        "apps/web/src/pages/rulebook/*/*.tsx",
+        "apps/web/src/pages/admin/*/*.ts",
+        "apps/web/src/pages/admin/*/*.tsx"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "@/app",
+                      "@/app/**",
+                      "@/pages",
+                      "@/pages/**",
+                      "@/mocks",
+                      "@/mocks/**",
+                      "@/test",
+                      "@/test/**",
+                      "../../**",
+                      "./../../**",
+                      ".././**",
+                      "src",
+                      "src/**",
+                      "../**",
+                      "./../**",
+                      "../..",
+                      "./../..",
+                      "@/*/../**",
+                      "@/./**",
+                      "@//**"
+                    ],
+                    "message": "層・グループのフォルダ・スライスの直下のファイルから、../ で外へ出る import はしない。そもそも直下にファイルを置かず、セグメント（ui・api・lib・model など）に入れる（docs/process/rules/architecture.md「依存の向き」）"
+                  },
+                  {
+                    "group": ["@cartagraph/schemas", "@cartagraph/schemas/**"],
+                    "message": "API のスキーマ（@cartagraph/schemas。本文と応答の型）を import してよいのは entities と mocks・test だけ（docs/process/rules/architecture.md「依存の向き」）"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["packages/schemas/src/**"],
+      "linter": {
+        "rules": {
+          "performance": {
+            "noBarrelFile": "error",
+            "noReExportAll": "error"
+          },
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": ["../**", "./../**", "@cartagraph/schemas", "@cartagraph/schemas/**"],
+                    "message": "表に無いディレクトリ（と src の直下）はほかのディレクトリを import しない（docs/process/rules/architecture.md「packages/schemas の中の置き場所」）"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "packages/schemas/src/card-pool/**",
+        "packages/schemas/src/characters/**",
+        "packages/schemas/src/library/**",
+        "packages/schemas/src/me/**",
+        "packages/schemas/src/recruitments/**",
+        "packages/schemas/src/sessions/**",
+        "packages/schemas/src/scenarios/**"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "../**",
+                      "./../**",
+                      "@cartagraph/schemas",
+                      "@cartagraph/schemas/**",
+                      "!../endpoint/**",
+                      "!./../endpoint/**",
+                      "!../body/**",
+                      "!./../body/**"
+                    ],
+                    "message": "URL の区切りごとのディレクトリが import してよい先は endpoint/・body/ と @cartagraph/domain・zod だけ（docs/process/rules/architecture.md「packages/schemas の中の置き場所」）"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["packages/schemas/src/api/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "../**",
+                      "./../**",
+                      "@cartagraph/schemas",
+                      "@cartagraph/schemas/**",
+                      "!../body/**",
+                      "!./../body/**",
+                      "!../endpoint/**",
+                      "!./../endpoint/**",
+                      "!../card-pool/**",
+                      "!./../card-pool/**",
+                      "!../characters/**",
+                      "!./../characters/**",
+                      "!../library/**",
+                      "!./../library/**",
+                      "!../me/**",
+                      "!./../me/**",
+                      "!../recruitments/**",
+                      "!./../recruitments/**",
+                      "!../sessions/**",
+                      "!./../sessions/**",
+                      "!../scenarios/**",
+                      "!./../scenarios/**"
+                    ],
+                    "message": "api/ が import してよい先は、URL の区切りごとのディレクトリ・endpoint/・body/ と @cartagraph/domain・zod だけ（docs/process/rules/architecture.md「packages/schemas の中の置き場所」）"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["packages/schemas/src/endpoint/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "../**",
+                      "./../**",
+                      "@cartagraph/schemas",
+                      "@cartagraph/schemas/**",
+                      "@cartagraph/domain",
+                      "@cartagraph/domain/**",
+                      "!../body/**",
+                      "!./../body/**"
+                    ],
+                    "message": "endpoint/ が import してよい先は body/ と zod だけ（docs/process/rules/architecture.md「packages/schemas の中の置き場所」）"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["packages/schemas/src/body/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "../**",
+                      "./../**",
+                      "@cartagraph/schemas",
+                      "@cartagraph/schemas/**",
+                      "@cartagraph/domain",
+                      "@cartagraph/domain/**"
+                    ],
+                    "message": "body/ はほかのディレクトリも @cartagraph/domain も import しない（docs/process/rules/architecture.md「packages/schemas の中の置き場所」）"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

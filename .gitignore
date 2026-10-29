@@ -1,0 +1,18 @@
+node_modules/
+docs/.vitepress/cache/
+docs/.vitepress/dist/
+apps/*/dist/
+apps/web/playwright-report/
+apps/web/test-results/
+# Vitest の HTML レポート（pnpm test:report。deploy.yml が Pages に載せる）
+*/*/vitest-report/
+# Vitest の JSON（pnpm test:report。ルールとテストの結果のページの入力）と、そのページ（pnpm rule:report）
+*/*/vitest-results/
+/rule-test-report/
+# トレースのページ（pnpm trace:report）
+/trace-report/
+*.log
+# 開発サーバーの書き込みの口が書いている途中の一時ファイル（apps/web/vite/scenarioFilePlugin.ts）
+scenarios/.*.tmp
+apps/web/e2e-results/
+apps/web/usecase-report/

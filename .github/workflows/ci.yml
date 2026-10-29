@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint (Biome)
+        run: pnpm lint
+
+      - name: Typecheck (apps/web)
+        run: pnpm web:typecheck
+
+      - name: Typecheck (packages/domain)
+        run: pnpm domain:typecheck
+
+      - name: Test (packages/domain)
+        run: pnpm domain:test
+
+      - name: Typecheck (packages/schemas)
+        run: pnpm schemas:typecheck
+
+      - name: Test (packages/schemas)
+        run: pnpm schemas:test
+
+      - name: Test (apps/web)
+        run: pnpm web:test
+
+      - name: Test (scripts・Claude Code のフック)
+        run: pnpm tools:test
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm --filter @cartagraph/web exec playwright install --with-deps chromium
+
+      - name: Install Playwright OS dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: pnpm --filter @cartagraph/web exec playwright install-deps chromium
+
+      - name: E2E (apps/web)
+        run: pnpm web:e2e
+
+      - name: Build docs (link check)
+        run: pnpm docs:build
+
+      # docs:build が dist を作り直すので、その後に流す。壊れた文書が main に入ってデプロイだけが落ちるのを防ぐ
+      - name: Build API docs (redocly lint)
+        run: pnpm api:docs

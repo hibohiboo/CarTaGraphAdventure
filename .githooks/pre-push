@@ -1,0 +1,32 @@
+#!/bin/sh
+# push前に、型検査・テスト・docsビルド（リンク切れ検査）・API ドキュメントの生成（redocly lint）をローカルで通す。
+# CI（.github/workflows/ci.yml）と同じ型検査・テスト（apps/web・packages/domain・packages/schemas）・docsビルド・API ドキュメントの生成を、
+# pushする前に手元で確認するのが目的。
+# 有効化: git config --local core.hooksPath .githooks
+# （`pnpm install` の prepare スクリプトが自動で設定する。scripts/setup-git-hooks.mjs 参照）
+#
+# 成功したときは1行だけを出し、失敗したときだけ、落ちたコマンドの出力を全部出す（2026-10-12）。
+# 成功しても約340行を出していて、AI が push すると、その全部が会話に入ってトークンを使っていたため。
+#
+# 一時的に無効化したい場合は `git push --no-verify`。ただし CI 側で同じチェックが
+# 走るので、無効化して push しても取りこぼしはそこで検出される。
+
+if ! command -v pnpm >/dev/null 2>&1; then
+  echo "[pre-push] pnpm が見つかりません。チェックをスキップします（PATH を確認してください）" >&2
+  exit 0
+fi
+
+steps="web:typecheck domain:typecheck domain:test schemas:typecheck schemas:test web:test tools:test docs:build api:docs"
+log=$(mktemp)
+trap 'rm -f "$log"' EXIT
+
+echo "[pre-push] $steps"
+for step in $steps; do
+  if ! pnpm "$step" >"$log" 2>&1; then
+    cat "$log" >&2
+    echo "[pre-push] pnpm $step に失敗したため push を中止しました（上が出力）。" >&2
+    echo "[pre-push] 緊急時は git push --no-verify で迂回できますが、CI で同じチェックが走ります。" >&2
+    exit 1
+  fi
+done
+echo "[pre-push] すべて通りました"

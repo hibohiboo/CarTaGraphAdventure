@@ -1,0 +1,22 @@
+# CarTaGraphAdventure プロジェクトルール
+
+開発ルール・技術スタック・ディレクトリ構成・最重要ルールは、ツールに依存しない入口ファイル `AGENTS.md` に集約している（ここに重複して書かない）。逆に、Claude Code だけの話（`.claude/` の中身と決まり、Claude Code のツールの使い方）はここだけに書き、`AGENTS.md` には書かない。`AGENTS.md` は下の `@` で読み込まれるので、両方に書くと Claude Code には同じ指示が2回届く。
+
+@AGENTS.md
+
+## Claude Code 固有の補足
+
+- `.claude/agents/` と `.claude/skills/` は、`docs/process/` に書かれた手順の**呼び出し口**である（何があるかはディレクトリを見る。ここに名前を並べない）。手順の本文を変えるときは `docs/process/` 側を直す。`.claude/rules/` も同じく呼び出し口で、`scripts/sync-claude-rules.mjs` がルールのページの frontmatter の `paths` から作る（手で書かない。AGENTS.md「開発ルールの適用」）。`.claude/skills/react-best-practices` だけは例外で、Vercel Labs の配布物をそのまま取り込んだ参照資料（手で直さない。使い方の正は `docs/process/rules/architecture.md`「React の書き方」）。
+- サブエージェントの `model` は `inherit`（セッションのモデルを引き継ぐ）にし、特定モデルを固定しない。
+- プランドキュメントは `docs/plans/`（`settings.json` の `plansDirectory`）に置く。
+- 自動メモリ（`.claude/memory/`）は Claude 固有の記憶であり、他のエージェントからは見えない。プロジェクトとして残すべき知識（構成・運用上の注意・決定事項）は `docs/` に書き、メモリにはそこへのポインタと個人的な作業上の学びだけを残す。
+- Bash ツールで長い heredoc（`cat <<'EOF' ... EOF` 等）を使って大きなファイルを書くと、内容が途中で切れて壊れることがある。大きなファイルは Write ツールで書く（LF 改行で書かれることは確認済み）。ソースファイル（`.ts`・`.tsx`・`.mjs` など）への heredoc での書き込みは、バックスラッシュが崩れるので `.claude/hooks/guard-bash.mjs` が止める（JSON・Markdown は止めない）。
+- 同じ理由で、複数のファイルを書き換えるスクリプト（Python など）も heredoc で渡さず、Write でスクラッチパッドにファイルとして書いてから実行する（インタプリタへの heredoc と、git フックの省略は `.claude/hooks/guard-bash.mjs` が止める）。日本語を出力するスクリプトは `PYTHONIOENCODING=utf-8` を付けて実行する（Windows のコンソールは cp932 で、出力の途中で例外になる）。
+- Bash ツールは Git Bash で動くので、`/` で始まる値（`WEB_BASE=/CarTaGraphAdventure/app/` など）を渡すと Windows のパスに書き換えられる。ビルドやサーバーを起動する前に `docs/architecture/web-app.md`「ローカル開発の注意」を読む。コマンドの引数に渡すコードの断片も同じで、`// コメント` で始まる文字列は `/ コメント` に化ける。ファイルの文字列を置き換えるときは、Edit ツールか `node scripts/replace-once.mjs <spec.json>` を使い、置換の文字列を引数で渡さない。`sed -i` は `.claude/hooks/guard-bash.mjs` が止める（2回当てて化けても気づけないため）。
+- main と比べるのに `git stash` を使わない（stash → pop でステージした削除などが解ける）。`git grep <パターン> main -- <パス>`・`git show main:<パス>` で読む（`.claude/hooks/guard-bash.mjs` が止める）。
+- わざと崩した箇所を `git checkout <パス>`・`git restore` で戻さない（未コミットの変更ごと消える）。`node scripts/mutate-check.mjs`（外して確かめて元に戻す）か、replace-once の逆向きの置換で戻す（`.claude/hooks/guard-bash.mjs` が止める。ブランチの切り替えは止めない）。
+- ツールを1回呼ぶたびに、それまでの会話全体を読み直す。読む量よりターン数が効くので、独立した調べもの（複数ファイルの Read・Grep・git の確認）は1回の応答でまとめて呼ぶ。1つのファイルを `sed -n` で数十行ずつ小分けに読まず、要る範囲を1回で読む。
+- 開発サイクルの区切り（プラン〜プランのレビュー／実装〜人間レビュー／振り返り）では、次へ進む前に、引き継ぐことをプランに書き終え、人間に `/clear`（新しいセッション）を頼む。頼むときは、次のセッションの手順とモデルの等級（強い／標準／軽い）と、それに当たるモデル（`dev-cycle` スキル「モデルの等級の割り当て」）を合わせて示す。次のセッションはプランを読んで始める（`docs/process/index.md`「セッションを分ける」）。
+- 体制の進化ログの月ごとのページ（`docs/process/evolution/<年-月>.md`）は、全体を Read しない（長くなる）。項目を足すときは、新しいものが上なので Read の `limit` で先頭だけを読んで Edit する。過去の項目や却下を探すときは Grep で引く。
+- サブエージェントが利用上限（rate limit）などで途中で止まったら、作り直さず SendMessage でその agentId に続きを頼む（途中まで読んだ・確かめた内容が残る）。
+- ブラウザで確かめるときは `browser-check` スキルを使う（起動と後始末の正は `docs/architecture/web-app.md`「ローカル開発の注意」）。

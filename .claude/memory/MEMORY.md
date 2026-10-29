@@ -1,0 +1,9 @@
+- [pushしたら確認不要、報告でよい](push-then-report.md) — mainへのpushは事前確認なしで実行し、完了後に報告する
+- [複数画面は着手前に一覧化する](list-screens-before-building.md) — UIモックアップを複数作る時は先に画面一覧を示してスコープ確認する
+- [開発プロセスの置き場所と2ルート運用](dev-process-structure.md) — docs/processがSSOT、AGENTS.mdが入口、.claudeは呼び出し口（rulesは自動生成）
+- [lintは作業中に都度かけない](feedback-lint-cadence.md) — pre-commitフックに任せる。型検査・テストは節目で実行を継続
+- [古い記述は気づいたらその場で直す](fix-stale-docs-immediately.md) — 理由が無ければ報告だけで止めず直す。理由があれば止めて伝える
+- [改善は仕組みで解決する](prefer-mechanisms.md) — 振り返りの改善案は、ルールより機械で止める・自動で組み立てる案を優先する
+- [進め方の変更は進化ログに漏らさず残す](record-process-evolution.md) — 採らなかった案も候補に残す
+- [複数ファイルの書き換えは全部検査してから書く](transactional-edit-scripts.md) — 途中で止まって半端に書き換えない
+- [崩した箇所を git checkout で戻さない](no-git-checkout-to-undo-mutation.md) — 未コミットの変更ごと消える。mutate-check か逆向きの置換で戻す

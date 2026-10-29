@@ -1,0 +1,100 @@
+name: Deploy docs and web app to Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v6
+        with:
+          enablement: true
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build docs and web app
+        run: pnpm run build:pages
+        env:
+          WEB_BASE: /CarTaGraphAdventure/app/
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm --filter @cartagraph/web exec playwright install --with-deps chromium
+        continue-on-error: true
+
+      - name: Install Playwright OS dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: pnpm --filter @cartagraph/web exec playwright install-deps chromium
+        continue-on-error: true
+
+      - name: E2E (report only, does not block deploy)
+        run: pnpm web:e2e
+        continue-on-error: true
+
+      - name: Vitest (report only, does not block deploy)
+        if: always()
+        run: pnpm test:report
+        continue-on-error: true
+
+      - name: Build use case report (report only, does not block deploy)
+        if: always()
+        run: node scripts/build-usecase-report.mjs
+        continue-on-error: true
+
+      - name: Build trace report (report only, does not block deploy)
+        if: always()
+        run: node scripts/build-trace-report.mjs
+        continue-on-error: true
+
+      - name: Copy test reports into Pages dist
+        if: always()
+        run: node scripts/copy-test-reports-to-pages.mjs
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: docs/.vitepress/dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
