@@ -5,7 +5,7 @@ apps/*/dist/
 apps/web/playwright-report/
 apps/web/test-results/
 # Vitest の HTML レポート（pnpm test:report。deploy.yml が Pages に載せる）
-*/*/vitest-report/
+*/*/.vitest/
 # Vitest の JSON（pnpm test:report。ルールとテストの結果のページの入力）と、そのページ（pnpm rule:report）
 */*/vitest-results/
 /rule-test-report/

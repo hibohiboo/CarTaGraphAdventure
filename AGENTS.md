@@ -13,7 +13,7 @@ Claude Code は `CLAUDE.md` からこのファイルを読み込む。
 - TypeScript のみ。pnpm workspace によるモノレポ（Node 24 / pnpm 11）
 - `docs/` … VitePress 製の設計仕様書サイト（GitHub Pages で公開）
 - `apps/web/` … Vite + React 19 + react-router（Hashルーター）
-  - **バックエンドは未実装。** MSW も持ち込んでいない
+  - **バックエンドは未実装。** MSW は依存と worker（`public/mockServiceWorker.js`）まで。ハンドラ（`@/mocks`）と起動は、画面から API を叩く最初の要望で作る
 - `packages/domain/` … ドメイン。`docs/` の用語をそのまま型に落としたもの
 - `packages/schemas/` … API の一覧（本文と応答の形・状態コード）とリクエストの本文のスキーマ（zod）。ここから OpenAPI の文書（API ドキュメント）を作る
 - テスト … Vitest（`apps/web/src/test/`、`packages/domain/src/**/*.test.ts`、`packages/schemas/src/**/*.test.ts`）。E2E は Playwright（`apps/web/e2e/`）
@@ -44,7 +44,7 @@ pnpm schemas:test     # Vitest（packages/schemas の API の一覧・本文と�
 pnpm schemas:typecheck # tsc（packages/schemas。テストファイルも含む）
 pnpm tools:test       # node --test（scripts/ と .claude/hooks/ の補助スクリプト）
 pnpm trace:report     # 要望からユースケース・画面・ルールの節・テスト・集約・イベントまでのつながりの図のページ（trace-report/index.html）を作る。`pnpm docs:build; pnpm web:e2e; pnpm test:report; pnpm trace:report` と流す（docs/architecture/test-report.md「トレースの見方」）
-pnpm test:report      # 各パッケージの Vitest を HTML・JSON のレポート付きで流す（各パッケージの vitest-report/ に書く。デプロイが Pages に載せる。docs/architecture/test-report.md）
+pnpm test:report      # 各パッケージの Vitest を HTML・JSON のレポート付きで流す（HTML は各パッケージの .vitest/、JSON は vitest-results/ に書く。デプロイが Pages に載せる。docs/architecture/test-report.md）
 pnpm docs:dev         # 仕様書サイトをローカルで確認
 pnpm docs:build       # 仕様書サイトのビルド（リンク切れ・見出しへのリンクの食い違い・用語の旧称（scripts/check-terms.mjs）・画面一覧とルート定義の食い違い（scripts/check-screens.mjs）・集約・イベントの流れ・実装パターンの文書どうしのドメインイベントの食い違い（scripts/check-events.mjs）・E2E のテストに付けたユースケースの ID のタグ・ステップと use-cases.md の表の食い違い（scripts/check-usecase-tags.mjs）・要望の trace と UC の表の画面・集約・イベントの列の食い違い（scripts/check-trace.mjs）・文書が指すスクリプト・検査・pnpm のスクリプトが無いこと（scripts/check-doc-refs.mjs）・下の「開発ルールの適用」の表や .claude/rules/ とルールのページの paths の食い違い（scripts/sync-claude-rules.mjs --check）があると失敗する）
 pnpm build:pages      # docs + app + API ドキュメントをまとめてビルド（デプロイと同じ）

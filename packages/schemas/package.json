@@ -10,15 +10,15 @@
   "scripts": {
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
-    "test:report": "vitest run --reporter=default --reporter=html --reporter=json --outputFile.html=vitest-report/index.html --outputFile.json=vitest-results/results.json"
+    "test:report": "vitest run --reporter=default --reporter=html --reporter=json --outputFile.json=vitest-results/results.json"
   },
   "devDependencies": {
-    "@vitest/ui": "^4.1.11",
-    "typescript": "~5.9.0",
-    "vitest": "^4.1.11"
+    "@vitest/ui": "^5.0.5",
+    "typescript": "~7.0.2",
+    "vitest": "^5.0.5"
   },
   "dependencies": {
     "@cartagraph/domain": "workspace:*",
-    "zod": "^4.6.5"
+    "zod": "^4.6.7"
   }
 }

@@ -39,6 +39,8 @@ description: 機能追加・振る舞いの変更を「プラン作成→AIレ�
 
 `design-reviewer`・`edge-case-reviewer`・`spec-reviewer` を並列で起動し、P0〜P2 に整理する。P2 は直さず `docs/architecture/known-issues.md` に1行で記録する。P0・P1 は直して、指摘を出した観点のサブエージェントだけで再レビューする（`docs/process/rules/review.md`「終わりの条件」）。3ラウンドを超えたら人間に裁定を求める。
 
+**レビューの結果を人間に報告する前に、** プランに AI レビューの結果と「人間レビューの説明」を書き、状態の行を直してコミットする。報告はその後（`docs/process/index.md`「手順の終わりでは、報告の前に、次に要ることを済ませる」）。
+
 起動するときは Agent ツールの `model` で等級を指定する（定義の `inherit` は変えない）。既定は `design-reviewer` が `opus`、`edge-case-reviewer`・`spec-reviewer` が `sonnet`（`docs/process/rules/review.md`「レビュー観点」）。
 
 ## モデルの等級の割り当て（Claude Code）

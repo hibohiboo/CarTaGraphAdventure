@@ -16,10 +16,10 @@ const reports = [
   ['apps/web/usecase-report', 'usecase-report'],
   // 要望からテストまでのつながりの図（scripts/build-trace-report.mjs。deploy.yml が上の2つの後に作る）
   ['trace-report', 'trace-report'],
-  // Vitest（pnpm test:report）
-  ['apps/web/vitest-report', 'vitest-report/web'],
-  ['packages/domain/vitest-report', 'vitest-report/domain'],
-  ['packages/schemas/vitest-report', 'vitest-report/schemas'],
+  // Vitest（pnpm test:report）。Vitest 5 の HTML レポートは出力先を CLI の引数で指定できず、各パッケージの .vitest/ に出る
+  ['apps/web/.vitest', 'vitest-report/web'],
+  ['packages/domain/.vitest', 'vitest-report/domain'],
+  ['packages/schemas/.vitest', 'vitest-report/schemas'],
 ];
 
 for (const [from, to] of reports) {

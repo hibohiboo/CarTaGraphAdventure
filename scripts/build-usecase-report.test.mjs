@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { describe, it, test } from 'node:test';
+import { describe, it } from 'node:test';
 import {
   anchorFor,
   buildReportHtml,
@@ -40,7 +40,7 @@ const jsonOf = (...specs) => ({
 });
 const stateOf = (json, id) => computeStates(USE_CASES, json).get(id).state;
 
-test('T10: 通った（ID のステップがすべて error 無し・duration >= 0、結果が passed）', () => {
+it('T10: 通った（ID のステップがすべて error 無し・duration >= 0、結果が passed）', () => {
   const json = jsonOf(
     specOf('a', ['SC-1', 'SC-2'], { status: 'passed', steps: [step('SC-1 a'), step('SC-2 b')] }),
   );
@@ -48,7 +48,7 @@ test('T10: 通った（ID のステップがすべて error 無し・duration >=
   assert.equal(stateOf(json, 'SC-2'), 'passed');
 });
 
-test('T11: 落ちた（ID のステップに error）。その後ろの ID は手前で止まった', () => {
+it('T11: 落ちた（ID のステップに error）。その後ろの ID は手前で止まった', () => {
   const json = jsonOf(
     specOf('a', ['SC-1', 'SC-2', 'SC-3'], {
       status: 'failed',
@@ -60,7 +60,7 @@ test('T11: 落ちた（ID のステップに error）。その後ろの ID は�
   assert.equal(stateOf(json, 'SC-3'), 'stopped');
 });
 
-test('T12: ステップの外で落ちたら、最後の ID のステップが落ちた。時間切れも同じ', () => {
+it('T12: ステップの外で落ちたら、最後の ID のステップが落ちた。時間切れも同じ', () => {
   const outside = jsonOf(
     specOf('a', ['SC-1', 'SC-2'], { status: 'failed', steps: [step('SC-1 a'), step('SC-2 b')] }),
   );
@@ -76,13 +76,13 @@ test('T12: ステップの外で落ちたら、最後の ID のステップが�
   assert.equal(stateOf(timeout, 'SC-2'), 'failed');
 });
 
-test('T12: ID のステップが1つも記録されていない failed は、タグの最初の ID が落ちた', () => {
+it('T12: ID のステップが1つも記録されていない failed は、タグの最初の ID が落ちた', () => {
   const json = jsonOf(specOf('a', ['SC-1', 'SC-2'], { status: 'failed', steps: [] }));
   assert.equal(stateOf(json, 'SC-1'), 'failed');
   assert.equal(stateOf(json, 'SC-2'), 'stopped');
 });
 
-test('T12: 実物の JSON（通る・ステップで落ちる・ステップの外で落ちる・時間切れ）', () => {
+it('T12: 実物の JSON（通る・ステップで落ちる・ステップの外で落ちる・時間切れ）', () => {
   // SC-1：ステップの外で落ちたテストがあるので落ちた。SC-2：ステップで落ちたテストがあるので落ちた。SC-3：落ちたテストの後ろで走らなかった
   assert.equal(stateOf(real, 'SC-1'), 'failed');
   assert.equal(stateOf(real, 'SC-2'), 'failed');
@@ -100,7 +100,7 @@ test('T12: 実物の JSON（通る・ステップで落ちる・ステップの�
   assert.equal(byTitle('SC-2')['probe-pass'], 'passed');
 });
 
-test('T13: 混ざったとき（落ちた ＞ 手前で止まった ＞ 通った）', () => {
+it('T13: 混ざったとき（落ちた ＞ 手前で止まった ＞ 通った）', () => {
   const passed = specOf('p', ['SC-1'], { status: 'passed', steps: [step('SC-1 a')] });
   const stopped = specOf('s', ['SC-1', 'SC-2'], { status: 'failed', steps: [fail('SC-2 b')] });
   // SC-1 は p で通り、s では手前で止まった（SC-2 が先に落ちた）
@@ -115,7 +115,7 @@ test('T13: 混ざったとき（落ちた ＞ 手前で止まった ＞ 通っ�
   assert.equal(stateOf(jsonOf(twicePassed), 'SC-1'), 'stopped');
 });
 
-test('T14: ID の無い親の下の ID のステップを拾う。ID のステップの下の ID の無い子は影響しない', () => {
+it('T14: ID の無い親の下の ID のステップを拾う。ID のステップの下の ID の無い子は影響しない', () => {
   const nested = [
     step('下ごしらえ', { steps: [step('SC-1 a'), fail('SC-2 b')] }),
     step('SC-3 c', { steps: [fail('内側')] }),
@@ -128,7 +128,7 @@ test('T14: ID の無い親の下の ID のステップを拾う。ID のステ�
   assert.equal(runStates(['SC-3'], { status: 'passed', steps: nested }).get('SC-3'), 'passed');
 });
 
-test('T15: retry は最後の結果を使う', () => {
+it('T15: retry は最後の結果を使う', () => {
   const retried = (second) =>
     specOf('a', ['SC-1'], { status: 'failed', steps: [fail('SC-1 a')] }, second);
   assert.equal(
@@ -141,7 +141,7 @@ test('T15: retry は最後の結果を使う', () => {
   );
 });
 
-test('T16: 結果なし（JSON が無い・壊れている・起動の失敗）は全件「結果なし」で、例外を投げない', () => {
+it('T16: 結果なし（JSON が無い・壊れている・起動の失敗）は全件「結果なし」で、例外を投げない', () => {
   for (const json of [null, undefined, 'x']) {
     assert.equal(stateOf(json, 'SC-1'), 'noresult');
   }
@@ -160,7 +160,7 @@ test('T16: 結果なし（JSON が無い・壊れている・起動の失敗）�
   assert.equal(stateOf(other, 'SC-4'), 'none');
 });
 
-test('T12: ステップの外で落ちたとき、通った ID は通ったまま、次の走らなかった ID が落ちた', () => {
+it('T12: ステップの外で落ちたとき、通った ID は通ったまま、次の走らなかった ID が落ちた', () => {
   const json = jsonOf(
     specOf('a', ['PL-1', 'PL-2'], {
       status: 'failed',
@@ -178,13 +178,13 @@ test('T12: ステップの外で落ちたとき、通った ID は通ったま�
   assert.equal(states.get('PL-2').state, 'failed');
 });
 
-test('T12: skipped は落ちたでなく手前で止まった', () => {
+it('T12: skipped は落ちたでなく手前で止まった', () => {
   const json = jsonOf(specOf('a', ['SC-1', 'SC-2'], { status: 'skipped', steps: [] }));
   assert.equal(stateOf(json, 'SC-1'), 'stopped');
   assert.equal(stateOf(json, 'SC-2'), 'stopped');
 });
 
-test('T17: 組み立て（題・レポートへのリンク・見出しへのリンク・開始時刻・エスケープ）', () => {
+it('T17: 組み立て（題・レポートへのリンク・見出しへのリンク・開始時刻・エスケープ）', () => {
   const json = jsonOf(specOf('<b>&題', ['SC-1'], { status: 'passed', steps: [step('SC-1 a')] }));
   const ids = new Set(['シナリオ製作', 'sc-1-下書きを作る', 'グラフ将来']);
   const build = (idSet, j = json) =>
@@ -381,7 +381,7 @@ describe('T6: 実物の JSON（gm-session.test.ts を宣言のスキップにし
   });
 });
 
-test('T17: anchorFor は自分の見出し、無ければ業務領域、どちらも無ければ null', () => {
+it('T17: anchorFor は自分の見出し、無ければ業務領域、どちらも無ければ null', () => {
   const ids = new Set(['sc-1-下書きを作る', 'グラフ将来']);
   assert.equal(anchorFor(USE_CASES[0], ids), 'sc-1-下書きを作る');
   assert.equal(anchorFor(USE_CASES[4], ids), 'グラフ将来');

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { describe, it, test } from 'node:test';
+import { describe, it } from 'node:test';
 import { normalizeActors, parseTestFile, parseUseCases, USE_CASES_FILE } from './usecases.mjs';
 
 const COLUMNS_MD = `## シナリオ製作
@@ -44,7 +44,7 @@ const MD = `# 中核のユースケース
 | GR-1 | システム全体の構造を見る | システム製作者 | — |
 `;
 
-test('T1: 5列・4列の表の行から ID・名前・業務領域を読む。ヘッダ・区切り・見出し・本文は読まない', () => {
+it('T1: 5列・4列の表の行から ID・名前・業務領域を読む。ヘッダ・区切り・見出し・本文は読まない', () => {
   const list = parseUseCases(MD);
   assert.deepEqual(
     list.map((u) => [u.id, u.name, u.domain]),
@@ -56,7 +56,7 @@ test('T1: 5列・4列の表の行から ID・名前・業務領域を読む。�
   );
 });
 
-test('T2: （将来）の業務領域を将来として読む。1件も読めない・同じ ID が2回出るときは誤り', () => {
+it('T2: （将来）の業務領域を将来として読む。1件も読めない・同じ ID が2回出るときは誤り', () => {
   const list = parseUseCases(MD);
   assert.deepEqual(
     list.map((u) => u.future),
@@ -66,13 +66,13 @@ test('T2: （将来）の業務領域を将来として読む。1件も読めな
   assert.throws(() => parseUseCases(`${MD}\n| SC-1 | 重複 | a | b | c |\n`), /SC-1 が2回/);
 });
 
-test('T2: 実際の use-cases.md を読める', () => {
+it('T2: 実際の use-cases.md を読める', () => {
   const list = parseUseCases(readFileSync(USE_CASES_FILE, 'utf8'));
   assert.ok(list.some((u) => u.id === 'PL-1' && !u.future));
   assert.ok(list.some((u) => u.id === 'PL-2' && !u.future));
 });
 
-test('T3: タグを読む（配列・複数行・文字列1つ・ダブルクォート）', () => {
+it('T3: タグを読む（配列・複数行・文字列1つ・ダブルクォート）', () => {
   const t = parseTestFile(`
     test('a', { tag: ['@SC-1', '@SC-2',
       '@SC-10'] }, async () => {});
@@ -82,7 +82,7 @@ test('T3: タグを読む（配列・複数行・文字列1つ・ダブルクォ
   assert.deepEqual(parseTestFile(`test("a", { tag: ["@PL-2"] }, async () => {});`).tags, ['PL-2']);
 });
 
-test('T3: ID でないタグは読まない。小文字は形の違うタグ。コメントアウトした行は読まない', () => {
+it('T3: ID でないタグは読まない。小文字は形の違うタグ。コメントアウトした行は読まない', () => {
   const t = parseTestFile(`
     test('a', { tag: ['@slow', '@sc-1', '@SC-1'] }, async () => {});
     // test('b', { tag: ['@SC-9'] }, async () => {});
@@ -95,7 +95,7 @@ test('T3: ID でないタグは読まない。小文字は形の違うタグ。�
   assert.equal(t.testCount, 1);
 });
 
-test('T4: ステップの題の先頭の ID を読む。ID の無い題・空白の無い題・途中の ID は読まない', () => {
+it('T4: ステップの題の先頭の ID を読む。ID の無い題・空白の無い題・途中の ID は読まない', () => {
   const t = parseTestFile(`
     await test.step('SC-1 下書きを作る', async () => {});
     await test.step("PL-2 手札を出す", async () => {});
@@ -109,7 +109,7 @@ test('T4: ステップの題の先頭の ID を読む。ID の無い題・空白
   assert.equal(t.nonLiteralSteps, 0);
 });
 
-test('T7: 文字列の直書きでない test.step・題のタグ・describe のタグ・skip 系を読む', () => {
+it('T7: 文字列の直書きでない test.step・題のタグ・describe のタグ・skip 系を読む', () => {
   const t = parseTestFile(`
     test.describe('群', { tag: ['@SC-1'] }, () => {
       test('題 @SC-1', async () => {
@@ -237,7 +237,7 @@ describe('T1: 宣言のスキップと注記', () => {
   });
 });
 
-test('T3: 画面・アクター・集約・イベントの列を見出しの名前で読む（列の順が違っても読める）', () => {
+it('T3: 画面・アクター・集約・イベントの列を見出しの名前で読む（列の順が違っても読める）', () => {
   const byId = Object.fromEntries(parseUseCases(COLUMNS_MD).map((u) => [u.id, u]));
   assert.deepEqual(byId['SC-6'].screens, ['/creator/scenarios/:scenarioId', 'GM のホーム']);
   assert.deepEqual(byId['SC-6'].aggregates, ['シナリオ']);
@@ -249,7 +249,7 @@ test('T3: 画面・アクター・集約・イベントの列を見出しの名�
   assert.equal(byId['PL-2'].name, 'プレイする');
 });
 
-test('T3: —（画面・イベント）と（読むだけ）（集約）は空。将来の表は画面・集約・イベントが空で読める', () => {
+it('T3: —（画面・イベント）と（読むだけ）（集約）は空。将来の表は画面・集約・イベントが空で読める', () => {
   const byId = Object.fromEntries(parseUseCases(COLUMNS_MD).map((u) => [u.id, u]));
   assert.deepEqual(byId['SC-5'].aggregates, []);
   assert.deepEqual(byId['SC-5'].events, []);
@@ -260,14 +260,14 @@ test('T3: —（画面・イベント）と（読むだけ）（集約）は空�
   assert.equal(byId['GR-5'].future, true);
 });
 
-test('アクター・集約・イベントの列が無い表は、アクターを「システム」にせず、空で読む', () => {
+it('アクター・集約・イベントの列が無い表は、アクターを「システム」にせず、空で読む', () => {
   const md = '## 表\n\n| ID | ユースケース | 画面 |\n|---|---|---|\n| SC-1 | 下書き | `/a` |\n';
   const [u] = parseUseCases(md);
   assert.deepEqual([u.actors, u.aggregates, u.events], [[], [], []]);
   assert.deepEqual(u.columns, ['ID', 'ユースケース', '画面']);
 });
 
-test('T4: アクターの正規化（・で区切る／（…）を除く／注記だけはシステム／誰でもはそのまま）', () => {
+it('T4: アクターの正規化（・で区切る／（…）を除く／注記だけはシステム／誰でもはそのまま）', () => {
   assert.deepEqual(normalizeActors('シナリオ製作者・GM'), ['シナリオ製作者', 'GM']);
   assert.deepEqual(normalizeActors('GM（自動解決ならシステム）'), ['GM']);
   assert.deepEqual(normalizeActors('（セッションの正常終了）'), ['システム']);
