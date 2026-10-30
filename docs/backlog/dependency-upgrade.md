@@ -1,12 +1,14 @@
 ---
 title: 依存の版を上げる
-status: 進行中
+status: 完了
 summary: 前のリポジトリの lockfile のまま止めている依存を、メジャーの更新も含めて新しい版に上げる。Biome 2.6 の新しいテストの lint のルールは入れ、Markdown の整形は入れない。
 plans:
   - 2026-10-30-P3-依存の版を上げる.md
+cycles:
+  - { name: P3 依存の版を上げる, status: 完了, pr: 1 }
 trace:
   none: 開発の基盤で、つなぐユースケース・画面・ルールの節が無い
-updated: 2026-10-30
+updated: 2026-10-31
 ---
 
 # 依存の版を上げる
