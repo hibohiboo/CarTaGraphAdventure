@@ -1,5 +1,5 @@
 import type { Card } from '@cartagraph/domain/scenario/model';
-import styles from './ExamPage.module.css';
+import styles from './HandCard.module.css';
 
 interface Props {
   card: Card;
@@ -18,8 +18,8 @@ export function HandCard({ card, selected, onPlay }: Props) {
       aria-pressed={selected}
       onClick={onPlay}
     >
-      <span className={styles.cardTitle}>{card.title}</span>
-      <span className={styles.cardText}>{card.text}</span>
+      <span className={styles.title}>{card.title}</span>
+      <span className={styles.text}>{card.text}</span>
     </button>
   );
 }

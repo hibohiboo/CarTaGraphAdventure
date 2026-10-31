@@ -2,7 +2,6 @@
 :root {
   --felt: #1f2a24;
   --felt-glow: #2c3c33;
-  --felt-panel: #24322b;
   --felt-panel-2: #1a241e;
   --card: #efe7d8;
   --card-edge: rgba(43, 36, 28, 0.22);
@@ -14,7 +13,6 @@
   --seal-ink: #f3e9d8;
   --thread: #b8935a;
   --thread-dim: rgba(184, 147, 90, 0.38);
-  --thread-faint: rgba(184, 147, 90, 0.16);
   --focus: #d9b877;
 
   --font-serif: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "Noto Serif JP", serif;
