@@ -83,10 +83,11 @@ scripts/check-usecase-tags.mjs・build-usecase-report.mjs・build-trace-report.m
 
 ### ディレクトリと依存の向き
 
-下の層だけを import してよい（同じディレクトリの中は自由）。いまはディレクトリが無い（`src/index.ts` は殻。最初のディレクトリを足すときに消す）。
+下の層だけを import してよい（同じディレクトリの中は自由）。
 
 | ディレクトリ | 仕様ページ |
 |---|---|
+| `scenario`（シナリオ・シーン・手札・プレイの状態。ほかのディレクトリを import しない） | `index` |
 
 **機械的な検査は Biome**（コミット前のフックと CI の lint）。各ディレクトリが import してよい先の正は `biome.json` の `overrides`（`style/noRestrictedImports` の許可リスト）。循環は `suspicious/noImportCycles`、barrel は下の「境界」の barrel 禁止に従う。ディレクトリを足す・依存の向きを変えるときは、この節と `biome.json` を一緒に直す（`biome.json` はコメントを書けないので、理由はここに書く）。
 

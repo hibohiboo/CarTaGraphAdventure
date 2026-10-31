@@ -100,7 +100,10 @@ export default withMermaid(
               text: 'デザイナーノート',
               link: '/notes/',
               collapsed: true,
-              items: [{ text: 'ロードマップ', link: '/notes/roadmap' }],
+              items: [
+                { text: '遊びの共通の形', link: '/notes/cartagraph' },
+                { text: 'ロードマップ', link: '/notes/roadmap' },
+              ],
             },
           ],
         },

@@ -179,7 +179,7 @@
                 "patterns": [
                   {
                     "group": ["../**", "./../**", "@cartagraph/domain", "@cartagraph/domain/**"],
-                    "message": "表に無いディレクトリ はほかのディレクトリを import しない（docs/process/rules/architecture.md「packages/domain の中の置き場所」）"
+                    "message": "scenario と表に無いディレクトリはほかのディレクトリを import しない（docs/process/rules/architecture.md「packages/domain の中の置き場所」）"
                   }
                 ]
               }

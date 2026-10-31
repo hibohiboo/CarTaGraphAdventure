@@ -32,4 +32,5 @@ paths:
 
 ## ノートの一覧
 
+- [遊びの共通の形](cartagraph.md)
 - [ロードマップ](roadmap.md)
