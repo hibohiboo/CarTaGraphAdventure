@@ -87,7 +87,7 @@ scripts/check-usecase-tags.mjs・build-usecase-report.mjs・build-trace-report.m
 
 | ディレクトリ | 仕様ページ |
 |---|---|
-| `scenario`（シナリオ・シーン・手札・プレイの状態。ほかのディレクトリを import しない） | `index` |
+| `scenario`（シナリオ・シーン・ビート・手札・プレイの状態とプレイログ。ほかのディレクトリを import しない） | `index` |
 
 **機械的な検査は Biome**（コミット前のフックと CI の lint）。各ディレクトリが import してよい先の正は `biome.json` の `overrides`（`style/noRestrictedImports` の許可リスト）。循環は `suspicious/noImportCycles`、barrel は下の「境界」の barrel 禁止に従う。ディレクトリを足す・依存の向きを変えるときは、この節と `biome.json` を一緒に直す（`biome.json` はコメントを書けないので、理由はここに書く）。
 

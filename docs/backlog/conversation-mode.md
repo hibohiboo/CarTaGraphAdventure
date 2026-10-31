@@ -10,6 +10,7 @@ cycles:
 trace:
   usecases: [PL-1]
   screens: [/exam]
+  rules: [index/シーンですること, index/ビートの見せ方]
 updated: 2026-10-31
 ---
 

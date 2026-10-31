@@ -1,0 +1,16 @@
+/* NPC の絵：丸い枠にアイコンか画像 */
+.portrait {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1px solid var(--thread);
+  background: var(--felt-panel-2);
+  color: var(--thread);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  object-fit: cover;
+  font-size: 1.8rem;
+}

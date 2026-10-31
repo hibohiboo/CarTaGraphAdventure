@@ -1,0 +1,31 @@
+/* NPC の帯：絵の隣に名前と肩書 */
+.band {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--card);
+  color: var(--ink);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-card-sm);
+  padding: 10px 16px;
+}
+.name {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+.title {
+  margin-left: 0.8em;
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--ink-soft);
+}
+.description {
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+@media (max-width: 480px) {
+  .description {
+    display: none;
+  }
+}

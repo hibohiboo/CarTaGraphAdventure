@@ -1,0 +1,53 @@
+/* 手札の置き場 */
+.handZone {
+  border: 1px dashed var(--thread-dim);
+  border-radius: var(--radius-panel);
+  background: rgba(26, 36, 30, 0.6);
+  padding: 14px clamp(12px, 3vw, 20px) 20px;
+}
+.zoneLabel {
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  color: var(--parchment-text-dim);
+  margin-bottom: 14px;
+}
+.hand {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+}
+
+/* 提案のカードの形（点線の枠）。押せない（D6） */
+.proposal {
+  aspect-ratio: var(--card-ratio);
+  width: clamp(128px, 38vw, 156px);
+  border: 2px dashed var(--thread-dim);
+  border-radius: var(--radius-card);
+  background: var(--felt-panel-2);
+  color: var(--parchment-text-dim);
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+.proposalMark {
+  font-size: 1.6rem;
+  color: var(--thread-dim);
+}
+
+.toBeContinued {
+  text-align: center;
+  font-family: var(--font-serif);
+  color: var(--thread);
+  letter-spacing: 0.15em;
+  margin-bottom: 16px;
+}

@@ -1,0 +1,27 @@
+/* 自分のカード：幅が狭いときは手札の上の小さな帯になる */
+.card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--card);
+  color: var(--ink);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-card-sm);
+  padding: 8px 14px;
+}
+.silhouette {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--ink-soft);
+  color: var(--card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+.name {
+  font-family: var(--font-serif);
+  font-weight: 700;
+}

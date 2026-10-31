@@ -3,7 +3,7 @@ import type { PlayState } from './model';
 
 const CHARACTER_NAME = '{characterName}';
 
-export const renderText = (text: string, state: PlayState): string => {
+export const renderText = (text: string, state: Pick<PlayState, 'characterName'>): string => {
   const name = state.characterName;
   if (name === null) return text;
   // 関数を渡して、名前の中の $& などを置換の特殊パターンとして解釈させない
