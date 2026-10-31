@@ -1,14 +1,14 @@
 ---
 title: 試験の最初のシーンで名乗れる
 milestone: playable-scene
-status: 検討中
+status: 進行中
 summary: pnpm web:dev で開いたアプリのホームから冒険者登録の試験に入り、受付のシーンで手札「名乗る」を出してキャラクターの名前を書ける。名前を書くと試験官が名前を呼び、続きは準備中で止まる。
 plans:
   - 2026-10-31-P4-試験の最初のシーン.md
 trace:
   usecases: [PL-1]
-  screens: [試験のシーン]
-  rules: [index/シーンですること]
+  screens: [/exam]
+  rules: [index/シーンですること, index/キャラクター]
 updated: 2026-10-31
 ---
 

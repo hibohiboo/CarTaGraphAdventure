@@ -25,7 +25,7 @@
 - P1 の持ち込み（2026-10-30）：`.gitignore` に、置いていった `rule:report`・`/rule-test-report/`・`scenarioFilePlugin`・`scenarios/.*.tmp` の行が残っている
 - 同：`.claude/agents/spec-reviewer.md` が、持ち込んでいない `rulebook.ts` を確かめる手順を持っている
 - 同：`scripts/check-screens.mjs` の `NOT_IN_DIAGRAM = ['admin']` が、元のルートのグループのまま
-- 同：使われていない依存（`packages/domain` の `zod`、`packages/schemas` の `@cartagraph/domain`、`apps/web` の `@cartagraph/domain`・`@testing-library/user-event`）と、`apps/web/tsconfig.json` の include の無いディレクトリ `vite`
+- 同：使われていない依存（`packages/schemas` の `@cartagraph/domain`）と、`apps/web/tsconfig.json` の include の無いディレクトリ `vite`
 - 同：`scripts/build-trace-report.test.mjs:530` の、R8 で置き換えた通しの確かめ（`req:foundation` は trace が none で、skipped になりえない）。単体は :453 が確かめている
 - 同：`scripts/check-doc-anchors.mjs` は、`rulebook.ts` が無ければ黙って 0 件で通る（置き場所を変えると検査が外れたままになる）
 - 同：`scripts/check-events.mjs` の `section()` は、見出しが無いと空文字を返す。表が空の今は、見出しを消しても 0 件で通る
@@ -37,7 +37,6 @@
 - 同：進化ログの置いていったものは「却下」の節にあり、プランの「候補として書く」と違う。D4 の `widgets/`・`entities/` は作っていない（空のディレクトリは git に載らない）。`.gitattributes` の先頭のコメントが消えた
 - 同：`docs/process/rules/review.md:18`・`testing.md:49` が、まだ無い playable-scene の書き込みの口の規則を持っている
 - 同（2回目）：`scripts/` のテストのデータ（`check-events`・`check-trace`・`build-trace-report`・`build-usecase-report`・`check-screens` などの `*.test.mjs`）に、元のゲームの語（GM・セッション・シナリオの公開・自動戦闘）が残っている。見本なので動きには関わらない
-- 同（2回目）：`docs/backlog/index.md` の trace の例の `screens: [/]` は、PL-2 の画面（試験のシーン）と合っていない。シーンの画面を作ったら合わせる
 - P3 の実装レビュー（2026-10-30）：`scripts/copy-test-reports-to-pages.mjs` は `.vitest/` が無いと警告だけで exit 0 になる（テストが落ちてもデプロイは進める方針のため）。出力先がまた変わると、Pages にレポートが載らないまま CI が緑になる
 - 同：`scripts/check-usecase-tags.test.mjs` の `stops`・`bad` は、真なら `true`、偽なら失敗の文を返す形（`assert.equal(…, true)`）で、プランに書いた `assert.ok(….some(…))` を本文に置く形と違う（判定は同じ）
 - 同：`biome.json` のテストの override の `apps/web/e2e/**`・`src/test/**` は、テストでないヘルパーにも `useExpect` などがかかる（`expect` を持たないヘルパーは対象外で、いまは無害）

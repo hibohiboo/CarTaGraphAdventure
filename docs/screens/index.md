@@ -12,7 +12,7 @@
 ```mermaid
 flowchart TB
   home["ホーム /"] --> exam
-  exam["試験のシーン"]:::missing
+  exam["試験のシーン /exam"]
 
   classDef missing stroke-dasharray: 5 5
 ```
@@ -22,4 +22,4 @@ flowchart TB
 | ロール | 画面 | パス | できること |
 |---|---|---|---|
 | 共通 | ホーム | `/` | 最初の画面。冒険者登録の試験への入口になる |
-| PL | 試験のシーン | — | 冒険者登録の試験のシーンで、手札を出すか GM へ提案する（playable-scene で作る） |
+| PL | 試験のシーン | `/exam` | 冒険者登録の試験のシーンで、手札を出す。GM への提案はまだできない（PL-2 は未着手。画面に「準備中（仮）」と出す） |

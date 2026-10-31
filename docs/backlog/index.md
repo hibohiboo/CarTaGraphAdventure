@@ -25,7 +25,7 @@ cycles:             # 開発者向け：サイクルごとの状態と PR（あ�
   - { name: C1 基盤, status: 完了, pr: 1 }
 trace:              # アイデアがどこへ届くか（必須）。usecases・screens・rules のリストか、none の理由のどちらか
   usecases: [PL-2]
-  screens: [/]
+  screens: [/exam]
   rules: [index/提案]
 updated: 2026-01-01
 ---
