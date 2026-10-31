@@ -51,6 +51,7 @@ export function ExamPage() {
         </ul>
       )}
       {namingCard && <NameForm reason={reason} onSubmit={(name) => play(namingCard, name)} />}
+      {/* 仮：提案の保存（playable-scene の別の要望）と、未解決論点「公開版での提案」が決まるまで、提案のボタンを出さない */}
       <p>GM への提案は準備中です（仮）</p>
     </main>
   );

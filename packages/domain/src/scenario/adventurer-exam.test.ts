@@ -6,14 +6,15 @@ import { scenarioSchema } from './model';
 
 const sceneById = new Map(adventurerExam.scenes.map((scene) => [scene.id, scene]));
 
-// start から手札の next をたどって辿り着けるシーンの id
-const reachable = () => {
+// start から手札の next をたどって辿り着けるシーンの id。beforeNaming なら、名前を書くカードの先へは進まない
+const reachable = ({ beforeNaming = false } = {}) => {
   const seen = new Set<string>();
   const queue = [adventurerExam.start];
   for (let id = queue.shift(); id !== undefined; id = queue.shift()) {
     if (seen.has(id)) continue;
     seen.add(id);
-    queue.push(...(sceneById.get(id)?.hand.map((card) => card.next) ?? []));
+    const hand = sceneById.get(id)?.hand ?? [];
+    for (const card of hand) if (!(beforeNaming && card.asksCharacterName)) queue.push(card.next);
   }
   return seen;
 };
@@ -28,9 +29,12 @@ describe('adventurer-exam', () => {
     expect([...reachable()].sort()).toEqual([...sceneById.keys()].sort());
   });
 
-  it('名前が決まる前のシーン（start）の文に {characterName} が無く、名乗った後のシーンの文にはある', () => {
+  it('名前を書くカードを通らずに辿り着けるシーンの文に {characterName} が無く、名乗った後のシーンの文にはある', () => {
+    const beforeNaming = [...reachable({ beforeNaming: true })];
+    expect(beforeNaming).toContain(adventurerExam.start);
+    for (const id of beforeNaming)
+      expect(sceneById.get(id)!.text.join('\n'), id).not.toContain('{characterName}');
     const start = sceneById.get(adventurerExam.start)!;
-    expect(start.text.join('\n')).not.toContain('{characterName}');
     const named = start.hand.find((card) => card.asksCharacterName)!;
     expect(sceneById.get(named.next)!.text.join('\n')).toContain('{characterName}');
   });

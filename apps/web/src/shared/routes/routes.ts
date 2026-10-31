@@ -18,9 +18,6 @@ export interface RouteMeta {
   example?: string;
 }
 
-/** 試験のシーン。ホームからのリンク先。下の一覧の path は scripts/check-screens.mjs が直書きで読むので、定数を使わずに同じ値を書く */
-export const EXAM_PATH = '/exam';
-
 export const routes: RouteMeta[] = [
   {
     path: '/',
@@ -35,3 +32,13 @@ export const routes: RouteMeta[] = [
     description: '冒険者登録の試験のシーンで、手札を出す',
   },
 ];
+
+// 一覧の path は scripts/check-screens.mjs が直書きで読むので、リンク先の定数は一覧から引く
+const pathOf = (title: string) => {
+  const route = routes.find((r) => r.title === title);
+  if (!route) throw new Error(`ルートが無い：${title}`);
+  return route.path;
+};
+
+/** 試験のシーン。ホームからのリンク先 */
+export const EXAM_PATH = pathOf('試験のシーン');
