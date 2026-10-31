@@ -19,11 +19,13 @@ apps/web/                 Vite + React + react-router
                 グループの無いページは pages/<ページ>/）。ui/ にページと、そのページだけで使う部品
     widgets/    複数のページで使う、画面の大きなまとまり（いまは無い）
     features/   利用者の操作と UI が対になったもの（いまは無い。必要になったら作る）
-    entities/<エンティティ>/   エンティティの見た目・取得・変更（いまは無い）
+    entities/<エンティティ>/   エンティティの見た目・取得・変更（いまは proposal/api/ の提案を送る関数だけ）
     shared/     ui/（部品）、lib/（整形・変換・画面に依らない小さなフック）、
                 routes/（routes.ts：ルート一覧の唯一の情報源）
     main.tsx    エントリ（層の外）
     test/       層の外。Vitest のテスト（docs/process/rules/testing.md）
+  vite/         開発サーバーの口（Hono のアプリ proposalApp.ts）と、それをつなぐ Vite プラグイン（proposals.ts）、
+                要望ファイルの中身を作る proposalFile.ts。vite.config.ts が読み込む（下の「依存の向き」）
   e2e/          Playwright のテスト（*.test.ts。smoke.test.ts は全ルート、usecases/ はユースケースの通し）
 packages/domain/src/      ドメイン型と、UIに依存しないゲームロジック（純粋関数）。
                           仕様ページに合わせたドメインごとのディレクトリ（下の「packages/domain の中の置き場所」）
@@ -57,13 +59,17 @@ scripts/build-trace-report.mjs ──→ scripts/build-usecase-report.mjs・scri
 
 scripts/check-usecase-tags.mjs・build-usecase-report.mjs・build-trace-report.mjs・check-trace.mjs・branch-id.mjs
                               ──→ scripts/trace.mjs ──→ docs/backlog/（要望の frontmatter の読み手。ほかの scripts を import しない）
+
+apps/web/vite.config.ts ──→ apps/web/vite/proposals.ts ──→ scripts/trace.mjs（提案の要望を読む）・docs/backlog/（読む）
+                                                      └──→ [ssrLoadModule] apps/web/vite/proposalApp.ts・proposalFile.ts
+                                                            ──→ packages/domain・packages/schemas、docs/backlog/（書く）
 ```
 
 - **要望を読む `scripts/trace.mjs`** — 要望の frontmatter（`trace`・`title`・`status`）の読み手を1つにする。`check-usecase-tags.mjs` はスキップしたテストの直す要望の状態と `trace` を、`build-usecase-report.mjs` は「スキップ中」のリンクの文字（要望の `title`）を読む。`trace.mjs` がほかの scripts を import すると、`build-trace-report.mjs` との間で循環になる（`noImportCycles`）
 
-- **Vitest の設定から読む `scripts/rule-sections.mjs`** — 3パッケージの Vitest の設定がタグの一覧を作るために読む。設定は Vite がバンドルして読むので、Node が解決できない import をしない（`apps/web/vite/` と同じ）。Vitest は cwd がパッケージのディレクトリで動くので、読む場所は `import.meta.url` から組み立てたリポジトリの直下を基準にする。`apps/web/vite.config.ts` は tsc の対象なので、型は `scripts/rule-sections.d.mts` に置く。使い方は[テストのルール](testing.md)の「ルールのテストのタグ」
+- **Vitest の設定から読む `scripts/rule-sections.mjs`** — 3パッケージの Vitest の設定がタグの一覧を作るために読む。設定は Vite がバンドルして読むので、Node が解決できない import をしない（`apps/web/vite/` と同じ。ただし `apps/web/vite/proposalApp.ts`・`proposalFile.ts` は、プラグインが `server.ssrLoadModule` で読む（Vite の変換を通す）ので、`@cartagraph/domain`・`@cartagraph/schemas` の TS を import してよい。`vite.config.ts` の読み込みには入れない。`proposals.ts` は domain の型を `import type` するだけにする）。Vitest は cwd がパッケージのディレクトリで動くので、読む場所は `import.meta.url` から組み立てたリポジトリの直下を基準にする。`apps/web/vite.config.ts` は tsc の対象なので、型は `scripts/rule-sections.d.mts` に置く。使い方は[テストのルール](testing.md)の「ルールのテストのタグ」
 - **パッケージの間** — `apps/web` は `packages/domain` を参照してよい。逆は禁止。`packages/domain` は React・DOM に依存しない（下の「境界」）。`packages/schemas` は `packages/domain` を参照してよく、`apps/web` が参照する。`packages/domain` から `packages/schemas` は参照しない（domain は依存を宣言していないので、import すると解決に失敗して止まる）
-- **`@cartagraph/schemas` を import してよい層** — `entities`（本文の型と、domain に無い応答の型）と、層の外の `test` だけ。ほかの層（app・pages・widgets・features・shared）からは Biome で止める（`biome.json` の層ごとの `noRestrictedImports`。後ろの override は前の override の禁止を置き換えるので、層の直下のファイル用の override にも書く）
+- **`@cartagraph/schemas` を import してよい層** — `entities`（本文の型と、domain に無い応答の型）と、層の外の `test`、`apps/web/vite/` の `ssrLoadModule` で読むファイル（口が本文を検査する）だけ。ほかの層（app・pages・widgets・features・shared）からは Biome で止める（`biome.json` の層ごとの `noRestrictedImports`。後ろの override は前の override の禁止を置き換えるので、層の直下のファイル用の override にも書く）
 - **packages/domain の中** — 下の層だけを import してよい（下の「packages/domain の中の置き場所」の図と表。Biome で機械的に止める）
 - **apps/web の中** — FSD の層の順に、下の層だけを import してよい。同じ層の別スライスは import しない（`app → pages → widgets → features → entities → shared`）
   - スライスの外は `@/<層>/…` のエイリアス、スライスの中は相対パスで import する。エイリアスに `..`・`.` を入れない。相対パスは `./` か `../` を素直に重ねた形だけで書く（`../ui/../x`・`././x` のような形は検査をすり抜けるので書かない）
@@ -87,20 +93,20 @@ scripts/check-usecase-tags.mjs・build-usecase-report.mjs・build-trace-report.m
 
 | ディレクトリ | 仕様ページ |
 |---|---|
-| `scenario`（シナリオ・シーン・ビート・手札・プレイの状態とプレイログ。ほかのディレクトリを import しない） | `index` |
+| `scenario`（シナリオ・シーン・ビート・手札・プレイの状態とプレイログ・遊んだことのイベントの列と流し直し・提案の決まり。ほかのディレクトリを import しない） | `index` |
 
 **機械的な検査は Biome**（コミット前のフックと CI の lint）。各ディレクトリが import してよい先の正は `biome.json` の `overrides`（`style/noRestrictedImports` の許可リスト）。循環は `suspicious/noImportCycles`、barrel は下の「境界」の barrel 禁止に従う。ディレクトリを足す・依存の向きを変えるときは、この節と `biome.json` を一緒に直す（`biome.json` はコメントを書けないので、理由はここに書く）。
 
 ## packages/schemas の中の置き場所
 
-`packages/schemas/src/` は、API の URL の最初の区切りごとのディレクトリ（名前は区切りと同じ。いまは無い）と、共通の `body/`（本文の検査）・`endpoint/`（一覧の1項目の定義）、全体をまとめる `api/` に分ける。
+`packages/schemas/src/` は、API の URL の最初の区切りごとのディレクトリ（名前は区切りと同じ。いまは `proposals/`）と、共通の `body/`（本文の検査）・`endpoint/`（一覧の1項目の定義）、全体をまとめる `api/` に分ける。
 
 - 各ディレクトリの `request.ts` に、エンドポイントごとの本文のスキーマを `defineBody(スキーマ, 個別のメッセージの表)` で置く。書くのは形だけ（型・必須か・配列の要素の形）で、業務の検査は受け取る側・ドメインに残す
 - 各ディレクトリの `endpoints.ts` に、その区切りの API の一覧を `defineEndpoint` で置く（メソッド・パス・本文と、返しうる状態コードごとの応答の形。失敗の本文はどれも `{ message }`）。`response.ts` には、`packages/domain` に無い応答の形だけを置く。応答の形の多くは domain の zod スキーマを使う
 - `api/endpoints.ts` が全ディレクトリの一覧を1本にまとめ、`api/openapi.ts` がそこから OpenAPI の文書を作る
 - 列挙などは `packages/domain` のスキーマから引き、書き写さない
 - 直下にファイルを置かない・`index.ts` を作らない・自分のパッケージ名で import しない（`packages/domain` と同じ決まり）
-- 依存の向き：`api/` → 各ディレクトリ・`endpoint/`・`body/`、各ディレクトリ → `endpoint/`・`body/`、`endpoint/` → `body/`。`body/` はどこにも依存しない（zod だけ）。各ディレクトリと `api/` は `@cartagraph/domain`・zod も使ってよく、`endpoint/` は zod だけ。機械的な検査は Biome（`biome.json` の `packages/schemas/src/**` の override。区切りのディレクトリはいまは無いので、その override も無い。最初の区切りのディレクトリを足すときに、`endpoint/`・`body/` だけを許す override を作って `includes` にそのディレクトリを書き、`api/` の override の許可にも足す。以降のディレクトリは、その2か所に足す。足し忘れても、全体の override がほかのディレクトリの import を止める）
+- 依存の向き：`api/` → 各ディレクトリ・`endpoint/`・`body/`、各ディレクトリ → `endpoint/`・`body/`、`endpoint/` → `body/`。`body/` はどこにも依存しない（zod だけ）。各ディレクトリと `api/` は `@cartagraph/domain`・zod も使ってよく、`endpoint/` は zod だけ。機械的な検査は Biome（`biome.json` の `packages/schemas/src/**` の override。区切りのディレクトリ（いまは `proposals/`）ごとに、`endpoint/`・`body/` だけを許す override を作って `includes` にそのディレクトリを書き、`api/` の override の許可にも足す。新しいディレクトリは、その2か所に足す。足し忘れても、全体の override がほかのディレクトリの import を止める）
 
 ## React の書き方
 

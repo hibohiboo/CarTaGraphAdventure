@@ -167,6 +167,11 @@ describe('proposalSummary', () => {
     expect(proposalSummary(`${'あ'.repeat(99)}👨‍👩‍👧‍👦あ`)).toBe(`${'あ'.repeat(99)}👨‍👩‍👧‍👦…`);
   });
 
+  it('< と > は全角になる（VitePress が frontmatter を埋め込む <script> を文の </script> が閉じないように）', () => {
+    expect(proposalSummary('<script>alert(1)</script>')).toBe('＜script＞alert(1)＜/script＞');
+    expect(proposalTitle('a<b>c')).toBe('提案：a＜b＞c');
+  });
+
   it('タブなどの制御文字は空白になる', () => {
     expect(proposalSummary('a\tb\u0007c')).toBe('a b c');
     expect(proposalTitle('a\tb')).toBe('提案：a b');
