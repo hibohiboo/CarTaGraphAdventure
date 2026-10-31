@@ -14,7 +14,7 @@ description: 機能追加・振る舞いの変更を「プラン作成→AIレ�
 ## 1. プラン作成
 
 - 始める前に main の CI が通っているか確かめる（セッション開始時のフックの出力。出ていなければ `node scripts/check-main-ci.mjs`）。失敗していれば先に人間に知らせる
-- `docs/process/prompt-sample.md` の「1」の依頼文に沿う。質問は `grilling` スキルの手法（フロンティア単位のラウンド）で尽くす
+- `docs/process/prompt-sample.md` の「1」の依頼文に沿う。質問は `grilling` スキルの手法（フロンティア単位のラウンド）で尽くす。画面の配置を聞くときは、`AskUserQuestion` の `preview` に ASCII の配置図を入れて選んでもらう
 - 仕様ページ（`docs/cartagraph/`）に書いてあることは質問せず読む。未解決論点（`docs/open-questions.md`）に関わる判断だけ人間に聞く
 - 書き始める前に `node scripts/branch-id.mjs new feat <名前>` で id 付きのブランチを切る（main にはコミットできない）
 - 質問が尽きたら `docs/plans/<日付>-P<id>-<機能>.md` に8項目で書く
