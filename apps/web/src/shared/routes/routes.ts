@@ -25,4 +25,20 @@ export const routes: RouteMeta[] = [
     group: 'common',
     description: '最初の画面。冒険者登録の試験への入口になる',
   },
+  {
+    path: '/exam',
+    title: '試験のシーン',
+    group: 'pl',
+    description: '冒険者登録の試験のシーンで、手札を出す',
+  },
 ];
+
+// 一覧の path は scripts/check-screens.mjs が直書きで読むので、リンク先の定数は一覧から引く
+const pathOf = (title: string) => {
+  const route = routes.find((r) => r.title === title);
+  if (!route) throw new Error(`ルートが無い：${title}`);
+  return route.path;
+};
+
+/** 試験のシーン。ホームからのリンク先 */
+export const EXAM_PATH = pathOf('試験のシーン');

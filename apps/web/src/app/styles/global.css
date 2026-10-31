@@ -1,0 +1,54 @@
+/* 全画面の地（卓上のフェルト）。値は tokens.css、役割は docs/architecture/web-app.md「デザインシステム」 */
+@import "./tokens.css";
+
+* {
+  box-sizing: border-box;
+}
+html {
+  color-scheme: dark;
+}
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(ellipse 90% 60% at 50% 0%, var(--felt-glow), transparent 70%), var(--felt);
+  background-attachment: fixed;
+  color: var(--parchment-text);
+  font-family: var(--font-sans);
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  text-wrap: balance;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+a {
+  color: var(--focus);
+}
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+/* 動き（animation・transition）は、各画面で @media (prefers-reduced-motion: no-preference) の中にだけ書く */

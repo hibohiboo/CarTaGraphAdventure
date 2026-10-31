@@ -32,6 +32,16 @@ pnpm build:pages     # docs + app + API ドキュメントを docs/.vitepress/di
 pnpm api:docs        # API ドキュメントを docs/.vitepress/dist/api-docs/ に作る（docs:build の後に流す。下記）
 ```
 
+## デザインシステム
+
+画面の見た目の決まり。トークンの値の正は `apps/web/src/app/styles/tokens.css`（ここには役割だけを書く）。全画面の地は同じ場所の `global.css`（`main.tsx` で読む）、画面ごとの見た目は各スライスの `*.module.css`。前のリポジトリ（CarTaGraphFantasy）の見た目を持ち込んだ（`docs/plans/2026-10-31-P4-試験の最初のシーン.md` D11）。
+
+- **地と紙** — 卓上のフェルト（`--felt` 系）の上に、生成り紙（`--card`・文字は `--ink`）のカードや紙面を置く。卓上の文字は `--parchment-text`
+- **アクセント** — 金糸（`--thread`）は飾り線・置き場の枠、朱（`--seal`）は確かめる操作と断る理由、`--focus` はフォーカスと選んでいるカードの枠
+- **文字** — 見出し・カード名・シーンの文は明朝（`--font-serif`）、UI はゴシック（`--font-sans`）。Web フォントは読み込まず、OS の書体に任せる（オフラインと E2E の `networkidle` に響かないため）
+- **カード** — ゲームの中のカード1枚は縦横比 5:7（`--card-ratio`）。提案のカードは点線の枠（仕様の「提案も、見た目は手札と同じカードにする」）
+- **動き** — `animation`・`transition` は `@media (prefers-reduced-motion: no-preference)` の中にだけ書く（動きを減らす設定の人には出さない。`!important` で一律に消すと Biome の `noImportantStyles` に当たるため）
+
 ## API ドキュメント
 
 `packages/schemas` の API の一覧から OpenAPI 3.1 の文書を作り、Redoc の HTML 1枚にして `/api-docs/` に公開する（サイドバーの「開発」から開く）。

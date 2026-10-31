@@ -1,0 +1,28 @@
+/* デザイントークンの値の正はこのファイル。役割は docs/architecture/web-app.md「デザインシステム」 */
+:root {
+  --felt: #1f2a24;
+  --felt-glow: #2c3c33;
+  --felt-panel-2: #1a241e;
+  --card: #efe7d8;
+  --card-edge: rgba(43, 36, 28, 0.22);
+  --ink: #2b241c;
+  --ink-soft: #55493a;
+  --parchment-text: #ddd3bf;
+  --parchment-text-dim: #a99f8c;
+  --seal: #a33227;
+  --seal-ink: #f3e9d8;
+  --thread: #b8935a;
+  --thread-dim: rgba(184, 147, 90, 0.38);
+  --focus: #d9b877;
+
+  --font-serif: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "Noto Serif JP", serif;
+  --font-sans: "Hiragino Sans", "Yu Gothic UI", "Yu Gothic", "Noto Sans JP", sans-serif;
+
+  --card-ratio: 5 / 7;
+  --radius-card: 8px;
+  --radius-panel: 10px;
+  --shadow-card: 4px 4px 0 rgba(10, 14, 11, 0.32);
+  --shadow-card-sm: 3px 3px 0 rgba(10, 14, 11, 0.3);
+  --page-gutter: clamp(16px, 4vw, 40px);
+  --page-max: 760px;
+}
