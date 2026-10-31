@@ -85,7 +85,7 @@ describe('playCard で手札を出す', { tags: ['rule:index/シーンでする�
           { beatId: 'reception', speaker: 'milda', text: expect.any(String) },
           { beatId: 'reception', speaker: 'milda', text: expect.any(String) },
           { beatId: 'reception', speaker: 'milda', text: expect.any(String) },
-          { beatId: 'reception', speaker: 'player', text: '{characterName}と申します' },
+          { beatId: 'reception', speaker: 'player', text: '{characterName}' },
         ],
       },
     });

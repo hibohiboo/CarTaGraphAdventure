@@ -50,7 +50,9 @@ test('試験の受付で名乗り、次の台詞で名前を呼ばれる', { tag
     await expect(
       log.getByText(examBegins.lines[0]!.text.split('{characterName}').join(NAME)),
     ).toBeVisible();
-    await expect(log.getByText(introduce.say!.split('{characterName}').join(NAME))).toBeVisible();
+    await expect(
+      log.getByText(introduce.say!.split('{characterName}').join(NAME), { exact: true }),
+    ).toBeVisible();
     await expect(page.getByRole('alert')).toHaveCount(0);
     expect(consoleErrors, consoleErrors.join('\n')).toHaveLength(0);
   });

@@ -126,10 +126,12 @@ describe('受付（会話のビート）', { tags: ['rule:index/ビートの見�
     expectTitle();
     expect(logTexts()).toEqual([
       ...reception.lines.map((line) => line.text),
-      'アリサと申します',
+      'アリサ',
       'アリサさんね。では、試験を始めましょう',
     ]);
-    expect(screen.getByText('アリサ', { selector: 'p' })).toBeInTheDocument();
+    expect(
+      within(screen.getByRole('region', { name: '自分のキャラクター' })).getByText('アリサ'),
+    ).toBeInTheDocument();
     expect(screen.queryByText(NOT_NAMED)).not.toBeInTheDocument();
     expect(screen.queryByText(/\{characterName\}/)).not.toBeInTheDocument();
     expect(screen.getByText(NOT_READY)).toBeInTheDocument();

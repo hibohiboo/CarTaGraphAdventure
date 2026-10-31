@@ -46,7 +46,7 @@
               "text": "胸を張って、自分の名前を告げる。",
               "next": "exam-begins",
               "asksCharacterName": true,
-              "say": "{characterName}と申します"
+              "say": "{characterName}"
             }
           ]
         },
