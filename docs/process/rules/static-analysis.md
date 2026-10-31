@@ -65,14 +65,14 @@ Biome の組み込みのルールに無い検査を、GritQL のプラグイン�
 
 | プラグイン | かける範囲 | 止めるもの | 理由 |
 |---|---|---|---|
-| （いまは無い） | | | 前のリポジトリの `no-request-body.grit`（MSW のハンドラが本文を検査せずに使うのを止める）は、MSW のハンドラを作るときに足す（いまは worker までで、ハンドラが無い） |
+| （いまは無い） | | | 前のリポジトリの `no-request-body.grit`（MSW のハンドラが本文を検査せずに使うのを止める）は、MSW を使わなくなったので持ち込まない（開発サーバーの口は `safeParseBodyText` を通す。口のテストが本文の形の誤りを 422 で確かめる） |
 
 - **nursery のルールを入れていないこととの違い** — nursery のルールは版の更新で名前や挙動が変わる。プラグインは自分で書いたパターンなので、Biome の版を上げてプラグインの読み込みが壊れれば `pnpm lint` が設定の誤りで止まり、気づける（黙って効かなくなるのではない）
 - **確かめ方** — 違反を一時的に入れて `pnpm lint` が止まることを手で確かめる（Biome の設定の固定のテストは書かない。前のリポジトリの進化ログの却下「Biome の設定に対する固定のテスト」）
 
 ## 検査の対象から外しているファイル
 
-`files.includes` の `!` で、Biome の検査（lint・整形）から丸ごと外している。外しているのは、ビルドの出力・依存・自動生成のファイルと、Vercel Labs の配布物をそのまま取り込んだ `.claude/skills/react-best-practices`、MSW が `msw init` で作る `apps/web/public/mockServiceWorker.js` だけ。Vitest の HTML レポート（各パッケージの `.vitest/`）は `.gitignore` に書き、`vcs.useIgnoreFile` で外れる（`biome.json` には書かない）。
+`files.includes` の `!` で、Biome の検査（lint・整形）から丸ごと外している。外しているのは、ビルドの出力・依存・自動生成のファイルと、Vercel Labs の配布物をそのまま取り込んだ `.claude/skills/react-best-practices`だけ。Vitest の HTML レポート（各パッケージの `.vitest/`）は `.gitignore` に書き、`vcs.useIgnoreFile` で外れる（`biome.json` には書かない）。
 
 ## 入れていないもの
 

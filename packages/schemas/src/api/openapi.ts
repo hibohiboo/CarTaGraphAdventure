@@ -2,6 +2,7 @@
 // zod 4 の z.toJSONSchema で各スキーマを JSON Schema（2020-12。OpenAPI 3.1 と同じ）にし、名前の付いた型は
 // components.schemas に1回だけ出して $ref で参照する。scripts/build-api-docs.ts が JSON に書き、Redoc の HTML にする。
 
+import { playEventSchema } from '@cartagraph/domain/scenario/model';
 import { z } from 'zod';
 import { type Endpoint, errorBodySchema } from '../endpoint/define';
 import { endpoints as allEndpoints } from './endpoints';
@@ -14,6 +15,7 @@ type Json = Record<string, unknown>;
  */
 const named: [z.ZodType, string, string?][] = [
   [errorBodySchema, 'Error', '失敗の応答の本文。どの API も同じ形'],
+  [playEventSchema, 'PlayEvent', '遊んだことのイベント。列を流し直すと状態に戻る'],
 ];
 
 const registry = z.registry<{ id: string; description?: string }>();
@@ -22,7 +24,9 @@ for (const [schema, id, description] of named) {
 }
 
 /** タグ（URL の最初の区切り）の説明 */
-const TAGS: Record<string, string> = {};
+const TAGS: Record<string, string> = {
+  proposals: 'GM への提案。要望のファイルになる',
+};
 
 const REF_FROM = '#/$defs/';
 const REF_TO = '#/components/schemas/';
@@ -121,9 +125,9 @@ export function buildOpenApiDocument(endpoints: readonly Endpoint[] = allEndpoin
       title: 'カルタグラフ・アドベンチャー API',
       version: '0.0.0',
       description:
-        'カルタグラフ・アドベンチャーの Web アプリが使う API。バックエンドはまだ無い。一覧の正は packages/schemas。',
+        'カルタグラフ・アドベンチャーの Web アプリが使う API。バックエンドは無く、開発サーバーの口（apps/web/vite/）だけがある。一覧の正は packages/schemas。',
     },
-    servers: [{ url: '/', description: 'ローカルの開発サーバー。バックエンドは未実装' }],
+    servers: [{ url: '/api', description: 'ローカルの開発サーバー。公開版には無い' }],
     tags: usedTags.map((name) => ({ name, description: TAGS[name] ?? name })),
     paths,
     components: { schemas: components },

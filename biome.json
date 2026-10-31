@@ -13,7 +13,6 @@
       "!**/node_modules",
       "!docs/.vitepress/cache",
       "!docs/.vitepress/dist",
-      "!apps/web/public/mockServiceWorker.js",
       "!pnpm-lock.yaml",
       "!.claude/skills/react-best-practices"
     ]
@@ -772,9 +771,40 @@
                       "!../body/**",
                       "!./../body/**",
                       "!../endpoint/**",
+                      "!./../endpoint/**",
+                      "!../proposals/**",
+                      "!./../proposals/**"
+                    ],
+                    "message": "api/ が import してよい先は、URL の区切りごとのディレクトリ（proposals/。足し方は architecture.md の同じ節）・endpoint/・body/ と @cartagraph/domain・zod だけ（docs/process/rules/architecture.md「packages/schemas の中の置き場所」）"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["packages/schemas/src/proposals/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "../**",
+                      "./../**",
+                      "@cartagraph/schemas",
+                      "@cartagraph/schemas/**",
+                      "!../body/**",
+                      "!./../body/**",
+                      "!../endpoint/**",
                       "!./../endpoint/**"
                     ],
-                    "message": "api/ が import してよい先は、URL の区切りごとのディレクトリ（いまは無い。足し方は architecture.md の同じ節）・endpoint/・body/ と @cartagraph/domain・zod だけ（docs/process/rules/architecture.md「packages/schemas の中の置き場所」）"
+                    "message": "URL の区切りごとのディレクトリが import してよい先は endpoint/・body/ と @cartagraph/domain・zod だけ（docs/process/rules/architecture.md「packages/schemas の中の置き場所」）"
                   }
                 ]
               }

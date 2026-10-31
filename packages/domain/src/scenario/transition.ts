@@ -7,15 +7,16 @@ import {
   type Scenario,
   type Scene,
 } from './model';
+import { countGraphemes } from './text';
+
+export type PlayCardFailure = 'unknownCard' | 'nameRequired' | 'nameTooLong';
 
 export type PlayCardResult =
   | { ok: true; state: PlayState }
-  | { ok: false; reason: 'unknownCard' | 'nameRequired' | 'nameTooLong' };
+  | { ok: false; reason: PlayCardFailure };
 
 /** 名前の文字数の上限。文字は見た目の1文字（書記素）で数える */
 export const CHARACTER_NAME_MAX_LENGTH = 10;
-
-const graphemes = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
 
 /** 前後の空白を取り除いた名前を返す。決まりに合わなければ断る理由を返す */
 export const normalizeCharacterName = (
@@ -23,8 +24,7 @@ export const normalizeCharacterName = (
 ): { ok: true; name: string } | { ok: false; reason: 'nameRequired' | 'nameTooLong' } => {
   const name = (raw ?? '').trim();
   if (name === '') return { ok: false, reason: 'nameRequired' };
-  if ([...graphemes.segment(name)].length > CHARACTER_NAME_MAX_LENGTH)
-    return { ok: false, reason: 'nameTooLong' };
+  if (countGraphemes(name) > CHARACTER_NAME_MAX_LENGTH) return { ok: false, reason: 'nameTooLong' };
   return { ok: true, name };
 };
 

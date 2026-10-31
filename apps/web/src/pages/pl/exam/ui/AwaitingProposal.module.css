@@ -1,0 +1,26 @@
+/* 提案待ち：手札の上の、点線の札 */
+.awaiting {
+  border: 1px dashed var(--thread);
+  border-radius: var(--radius-panel);
+  background: rgba(26, 36, 30, 0.6);
+  color: var(--parchment-text);
+  padding: 14px clamp(12px, 3vw, 20px);
+  margin-bottom: 14px;
+}
+.lead {
+  font-family: var(--font-serif);
+  color: var(--thread);
+  letter-spacing: 0.08em;
+  line-height: 1.7;
+}
+.list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: var(--parchment-text-dim);
+  overflow-wrap: anywhere;
+}

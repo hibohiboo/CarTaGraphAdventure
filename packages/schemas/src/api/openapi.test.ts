@@ -56,6 +56,19 @@ describe('OpenAPI の文書', () => {
     expect(Object.keys(real.paths as Json)).toHaveLength(endpoints.length);
   });
 
+  it('本物の一覧：POST /proposals が 201・403・422・500 と本文のスキーマ（PlayEvent の名前付き）つきで出て、servers は /api', () => {
+    const real = buildOpenApiDocument();
+    const realPaths = real.paths as Record<string, Record<string, Json>>;
+    const post = realPaths['/proposals']?.post;
+    expect(Object.keys((post?.responses as Json) ?? {})).toEqual(['201', '403', '422', '500']);
+    expect(post?.requestBody).toMatchObject({ required: true });
+    const realSchemas = (real.components as { schemas: Record<string, Json> }).schemas;
+    expect(realSchemas.PlayEvent).toBeDefined();
+    expect(JSON.stringify(post?.requestBody)).toContain('#/components/schemas/PlayEvent');
+    expect((real.servers as { url: string }[])[0]?.url).toBe('/api');
+    expect((real.tags as { name: string }[]).map((t) => t.name)).toContain('proposals');
+  });
+
   it('使われない型は components に載せない（redocly の no-unused-components）', () => {
     const empty = buildOpenApiDocument([]);
     expect((empty.components as { schemas: Json }).schemas).toEqual({});

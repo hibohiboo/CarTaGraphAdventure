@@ -6,6 +6,8 @@ const REASON_TEXT = {
   nameRequired: '名前を書いてください。',
   nameTooLong: `名前は${CHARACTER_NAME_MAX_LENGTH}文字までです。`,
   unknownCard: 'このカードは今は出せません。',
+  awaitingProposal: '提案待ちのため、手札は出せません。',
+  invalidEvents: '遊んだ記録が正しくありません。',
 } as const;
 
 interface Props {

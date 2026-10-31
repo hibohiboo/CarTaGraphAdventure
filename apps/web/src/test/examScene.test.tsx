@@ -183,19 +183,17 @@ describe('受付（会話のビート）', { tags: ['rule:index/ビートの見�
     expect(document.querySelector('main b')).toBeNull();
   });
 
-  it('「GM への提案は準備中です（仮）」が紙面・会話（読んでいる間も）に出て、提案のボタンは無い', async () => {
+  it('提案のカードは紙面にも出て、会話では台詞を読み切ってから出る。仮の「準備中」の表示は無い', async () => {
     const user = await openEntrance();
-    const assertNoProposal = () => {
-      expect(screen.getByText('GM への提案は準備中です（仮）')).toBeInTheDocument();
-      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
-      expect(screen.queryByRole('button', { name: /提案/ })).not.toBeInTheDocument();
-    };
-    assertNoProposal();
+    const proposeCard = () => screen.queryByRole('button', { name: 'GM への提案' });
+    expect(proposeCard()).toBeInTheDocument();
+    expect(screen.queryByText(/準備中です（仮）/)).not.toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: new RegExp(approach.title) }));
     await screen.findByRole('log');
-    assertNoProposal();
+    expect(proposeCard()).not.toBeInTheDocument();
     await readAll(user);
-    assertNoProposal();
+    expect(proposeCard()).toBeInTheDocument();
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 
   it('次のビートまで進んでから描き直すと、入口のビートに戻る', async () => {

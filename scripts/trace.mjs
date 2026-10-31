@@ -111,11 +111,50 @@ function parseFlowList(value, key, fail) {
 
 /** frontmatter の `キー: 値` の値。YAML と同じく、全体を囲む引用符と ` #コメント` を外す */
 export function frontmatterValue(source, key) {
-  const end = source.indexOf('\n---', 4);
-  const frontmatter = source.startsWith('---') && end > 0 ? source.slice(0, end) : '';
+  const normalized = source.replaceAll('\r\n', '\n');
+  const end = normalized.indexOf('\n---', 4);
+  const frontmatter = normalized.startsWith('---') && end > 0 ? normalized.slice(0, end) : '';
   const raw = frontmatter.match(new RegExp(`^${key}:[ \\t]*(.*?)[ \\t]*$`, 'm'))?.[1] ?? '';
+  return unquote(raw);
+}
+
+/** 全体を囲む引用符と ` #コメント` を外す（YAML と同じ読み方） */
+function unquote(raw) {
   const quoted = raw.match(/^(['"])(.*)\1(?:\s+#.*)?$/);
   return quoted ? quoted[2] : raw.replace(/\s+#.*$/, '');
+}
+
+/**
+ * frontmatter の `キー:` の下にインデントして書いた `キー: 値` を { キー: 値 } で返す（提案の要望の `proposal:`）。
+ * `キー:` が無い・下に値が無いときは null。入れ子の深さは1段だけ
+ */
+export function frontmatterNested(source, key) {
+  const lines = frontmatterLines(source);
+  const start = lines ? lines.findIndex((l) => new RegExp(`^${key}:[ \\t]*$`).test(l)) : -1;
+  if (start === -1) return null;
+  const nested = {};
+  for (const line of lines.slice(start + 1)) {
+    if (line.trim() === '') continue;
+    const m = line.match(/^\s+([A-Za-z]+):[ \t]*(.*?)[ \t]*$/);
+    if (!m) break;
+    nested[m[1]] = unquote(m[2]);
+  }
+  return Object.keys(nested).length > 0 ? nested : null;
+}
+
+/**
+ * 提案の要望（開発サーバーの口が書く docs/backlog/proposal-*.md）を読む。
+ * `proposal:` の scenario・beat と、status・summary を返す。`proposal:` が無い・scenario か beat が欠けていれば null
+ */
+export function parseProposalFile(source) {
+  const proposal = frontmatterNested(source, 'proposal');
+  if (!(proposal?.scenario && proposal.beat)) return null;
+  return {
+    scenario: proposal.scenario,
+    beat: proposal.beat,
+    status: frontmatterValue(source, 'status'),
+    summary: frontmatterValue(source, 'summary'),
+  };
 }
 
 /** docs/backlog/ の要望を [{ name, title, status, trace }] で読む（trace が無い・誤りのときは例外。docs:build の検査が先に止める） */
