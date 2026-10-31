@@ -70,11 +70,9 @@ export function ConversationBeat({ beat, npcs, history, characterName, handProps
           次へ
         </button>
       )}
-      <div className={styles.bottom}>
+      <HandZone {...handProps} showHand={finished} />
+      <div className={styles.pc}>
         <PcCard characterName={characterName} />
-        <div className={styles.handArea}>
-          <HandZone {...handProps} showHand={finished} />
-        </div>
       </div>
     </div>
   );

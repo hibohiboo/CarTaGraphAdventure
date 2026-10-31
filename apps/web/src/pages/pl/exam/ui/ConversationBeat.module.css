@@ -81,22 +81,8 @@
   outline-offset: 2px;
 }
 
-/* 下部：広いときは自分のカードを手札の左に、狭いときは手札の上の小さな帯に */
-.bottom {
+/* 自分のカードは手札の下、中央に置く */
+.pc {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-}
-.handArea {
-  min-width: 0;
-}
-@media (min-width: 640px) {
-  .bottom {
-    flex-direction: row;
-    align-items: flex-start;
-  }
-  .handArea {
-    flex: 1;
-  }
+  justify-content: center;
 }
