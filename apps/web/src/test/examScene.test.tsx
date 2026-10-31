@@ -41,7 +41,7 @@ describe('試験のシーンで名乗る', () => {
   it('名乗るを押すと入力欄が出て、名前を確定すると次のシーンで名前を呼ばれる', async () => {
     const user = await openReception();
     await user.click(screen.getByRole('button', { name: new RegExp(introduce.title) }));
-    expect(screen.getByLabelText(NAME_LABEL)).toBeInTheDocument();
+    expect(screen.getByLabelText(NAME_LABEL)).toHaveFocus();
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(reception.title);
 

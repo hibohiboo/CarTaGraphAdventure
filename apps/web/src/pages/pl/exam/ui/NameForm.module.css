@@ -1,0 +1,88 @@
+/* 名前を書く登録用紙：生成り紙に、下線の記入欄と朱の確定ボタン */
+.sheet {
+  background: var(--card);
+  color: var(--ink);
+  border-radius: var(--radius-panel);
+  box-shadow:
+    inset 0 0 0 6px var(--card),
+    inset 0 0 0 7px var(--card-edge),
+    var(--shadow-card);
+  padding: 24px clamp(18px, 5vw, 32px) 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .sheet {
+    animation: slide 260ms ease-out;
+  }
+  .seal {
+    transition: transform 120ms ease;
+  }
+}
+
+@keyframes slide {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.heading {
+  text-align: center;
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  letter-spacing: 0.3em;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--card-edge);
+}
+.label {
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  margin-top: 6px;
+}
+.input {
+  width: 100%;
+  background: transparent;
+  color: var(--ink);
+  border: none;
+  border-bottom: 2px solid var(--ink-soft);
+  border-radius: 0;
+  padding: 6px 2px;
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+}
+.input:focus-visible {
+  outline: none;
+  border-bottom-color: var(--seal);
+}
+.reason {
+  color: var(--seal);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.seal {
+  align-self: center;
+  margin-top: 10px;
+  background: var(--seal);
+  color: var(--seal-ink);
+  border: none;
+  border-radius: 999px;
+  padding: 10px 28px;
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  box-shadow: var(--shadow-card-sm);
+  cursor: pointer;
+}
+.seal:hover {
+  transform: translateY(-2px);
+}
+.seal:active {
+  transform: translateY(1px);
+  box-shadow: none;
+}

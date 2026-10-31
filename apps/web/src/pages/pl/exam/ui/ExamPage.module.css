@@ -1,0 +1,175 @@
+/* 試験のシーン：卓の上に、シーンの紙面と手札のカードを並べる */
+.table {
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: clamp(20px, 5vw, 48px) var(--page-gutter) 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.header {
+  text-align: center;
+}
+.scenario {
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  color: var(--thread);
+}
+.title {
+  margin-top: 4px;
+  font-size: clamp(1.6rem, 6vw, 2.2rem);
+  color: var(--parchment-text);
+}
+/* 見出しの下の金糸の飾り線 */
+.title::after {
+  content: "";
+  display: block;
+  width: 120px;
+  height: 1px;
+  margin: 12px auto 0;
+  background: linear-gradient(to right, transparent, var(--thread), transparent);
+}
+
+/* シーンの文：生成り紙の紙面 */
+.narration {
+  position: relative;
+  background: var(--card);
+  color: var(--ink);
+  border-radius: var(--radius-panel);
+  box-shadow:
+    inset 0 0 0 6px var(--card),
+    inset 0 0 0 7px var(--card-edge),
+    var(--shadow-card);
+  padding: clamp(20px, 5vw, 32px) clamp(18px, 5vw, 36px);
+  font-family: var(--font-serif);
+  font-size: 1.02rem;
+  line-height: 1.95;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .narration {
+    animation: deal 320ms ease-out;
+  }
+  .card {
+    transition:
+      transform 140ms ease,
+      box-shadow 140ms ease,
+      border-color 140ms ease;
+  }
+}
+
+@keyframes deal {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* 手札の置き場 */
+.handZone {
+  border: 1px dashed var(--thread-dim);
+  border-radius: var(--radius-panel);
+  background: rgba(26, 36, 30, 0.6);
+  padding: 14px clamp(12px, 3vw, 20px) 20px;
+}
+.zoneLabel {
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  color: var(--parchment-text-dim);
+  margin-bottom: 14px;
+}
+.hand {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+}
+
+/* 手札のカード1枚（5:7） */
+.card {
+  aspect-ratio: var(--card-ratio);
+  width: clamp(128px, 38vw, 156px);
+  background: var(--card);
+  color: var(--ink);
+  border: 2px solid transparent;
+  border-radius: var(--radius-card);
+  box-shadow:
+    inset 0 0 0 4px var(--card),
+    inset 0 0 0 5px var(--card-edge),
+    var(--shadow-card-sm);
+  padding: 16px 12px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  cursor: pointer;
+}
+.card:hover,
+.card:focus-visible {
+  transform: translateY(-6px);
+}
+.card[data-selected="true"] {
+  transform: translateY(-10px);
+  border-color: var(--focus);
+  box-shadow:
+    inset 0 0 0 4px var(--card),
+    inset 0 0 0 5px var(--card-edge),
+    0 0 0 4px rgba(217, 184, 119, 0.3),
+    var(--shadow-card);
+}
+.cardTitle {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+.cardText {
+  font-size: 0.72rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+/* 提案のカードの形（点線の枠）。押せない（D6） */
+.proposal {
+  aspect-ratio: var(--card-ratio);
+  width: clamp(128px, 38vw, 156px);
+  border: 2px dashed var(--thread-dim);
+  border-radius: var(--radius-card);
+  background: var(--felt-panel-2);
+  color: var(--parchment-text-dim);
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+.proposalMark {
+  font-size: 1.6rem;
+  color: var(--thread-dim);
+}
+
+.toBeContinued {
+  text-align: center;
+  font-family: var(--font-serif);
+  color: var(--thread);
+  letter-spacing: 0.15em;
+  margin-bottom: 16px;
+}

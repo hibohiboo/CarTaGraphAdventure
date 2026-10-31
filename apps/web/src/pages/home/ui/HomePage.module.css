@@ -1,0 +1,70 @@
+/* タイトルの画面：卓の中央に題名と、試験への入口のカード */
+.title {
+  min-height: 100svh;
+  padding: 48px var(--page-gutter);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.kicker {
+  font-size: 0.75rem;
+  letter-spacing: 0.4em;
+  color: var(--thread);
+}
+.name {
+  margin-top: 8px;
+  font-size: clamp(1.7rem, 7vw, 2.8rem);
+  letter-spacing: 0.06em;
+}
+.name::after {
+  content: "";
+  display: block;
+  width: 160px;
+  height: 1px;
+  margin: 16px auto 0;
+  background: linear-gradient(to right, transparent, var(--thread), transparent);
+}
+.lead {
+  margin-top: 18px;
+  font-family: var(--font-serif);
+  color: var(--parchment-text-dim);
+}
+
+/* 入口のカード（5:7） */
+.entry {
+  margin-top: 40px;
+  aspect-ratio: var(--card-ratio);
+  width: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--card);
+  color: var(--ink);
+  border-radius: var(--radius-card);
+  box-shadow:
+    inset 0 0 0 4px var(--card),
+    inset 0 0 0 5px var(--card-edge),
+    var(--shadow-card);
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  transform: rotate(-2deg);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .entry {
+    transition: transform 160ms ease;
+  }
+}
+.entry:hover,
+.entry:focus-visible {
+  transform: rotate(0deg) translateY(-8px);
+}
+.note {
+  margin-top: 14px;
+  font-size: 0.8rem;
+  color: var(--parchment-text-dim);
+}
