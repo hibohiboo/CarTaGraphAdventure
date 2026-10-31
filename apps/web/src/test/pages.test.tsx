@@ -1,15 +1,11 @@
-import { render, screen } from '@testing-library/react';
-import { createMemoryRouter, RouterProvider } from 'react-router';
+import { screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { routeObjects } from '@/app/router';
 import { routes } from '@/shared/routes/routes';
+import { renderAt } from './renderAt';
 
 describe('全ルートの描画', () => {
   it.each(routes)('$title（$path）が見出しを出す', (route) => {
-    const router = createMemoryRouter(routeObjects, {
-      initialEntries: [route.example ?? route.path],
-    });
-    render(<RouterProvider router={router} />);
+    renderAt(route.example ?? route.path);
     expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
   });
 });

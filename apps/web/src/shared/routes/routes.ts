@@ -18,11 +18,20 @@ export interface RouteMeta {
   example?: string;
 }
 
+/** 試験のシーン。ホームからのリンク先 */
+export const EXAM_PATH = '/exam';
+
 export const routes: RouteMeta[] = [
   {
     path: '/',
     title: 'ホーム',
     group: 'common',
     description: '最初の画面。冒険者登録の試験への入口になる',
+  },
+  {
+    path: EXAM_PATH,
+    title: '試験のシーン',
+    group: 'pl',
+    description: '冒険者登録の試験のシーンで、手札を出す',
   },
 ];

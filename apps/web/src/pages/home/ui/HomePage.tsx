@@ -1,8 +1,13 @@
+import { Link } from 'react-router';
+import { EXAM_PATH } from '@/shared/routes/routes';
+
 export function HomePage() {
   return (
     <main>
       <h1>カルタグラフ・アドベンチャー</h1>
-      <p>冒険者登録の試験は、まだ準備中です。</p>
+      <p>
+        <Link to={EXAM_PATH}>試験を受ける</Link>
+      </p>
     </main>
   );
 }
