@@ -1,5 +1,12 @@
-// シーンの進み方（docs/cartagraph/index.md「シーンですること」「キャラクター」）
-import type { PlayState, Scenario } from './model';
+// ビートの進み方と、ビートの引き当て（docs/cartagraph/index.md「シーンですること」「キャラクター」）
+import {
+  type Beat,
+  type LogEntry,
+  PLAYER_SPEAKER,
+  type PlayState,
+  type Scenario,
+  type Scene,
+} from './model';
 
 export type PlayCardResult =
   | { ok: true; state: PlayState }
@@ -21,10 +28,29 @@ export const normalizeCharacterName = (
   return { ok: true, name };
 };
 
+/** ビートと、それが属するシーンを返す。無ければ undefined */
+export const locateBeat = (
+  scenario: Scenario,
+  beatId: string,
+): { scene: Scene; beat: Beat } | undefined => {
+  for (const scene of scenario.scenes) {
+    const beat = scene.beats.find((b) => b.id === beatId);
+    if (beat) return { scene, beat };
+  }
+  return undefined;
+};
+
 export const startPlay = (scenario: Scenario): PlayState => ({
-  sceneId: scenario.start,
+  beatId: scenario.start,
   characterName: null,
+  log: [],
 });
+
+/** ビートの内容（地の文の段落か、会話の台詞）をログの行にする */
+const beatEntries = (beat: Beat): LogEntry[] =>
+  beat.layout === 'paper'
+    ? beat.text.map((text) => ({ beatId: beat.id, speaker: null, text }))
+    : beat.lines.map((line) => ({ beatId: beat.id, speaker: line.speaker, text: line.text }));
 
 export const playCard = (
   scenario: Scenario,
@@ -32,13 +58,17 @@ export const playCard = (
   cardId: string,
   characterName?: string,
 ): PlayCardResult => {
-  const scene = scenario.scenes.find((s) => s.id === state.sceneId);
-  const card = scene?.hand.find((c) => c.id === cardId);
-  if (!card) return { ok: false, reason: 'unknownCard' };
+  const beat = locateBeat(scenario, state.beatId)?.beat;
+  const card = beat?.hand.find((c) => c.id === cardId);
+  if (!(beat && card)) return { ok: false, reason: 'unknownCard' };
+  let name = state.characterName;
   if (card.asksCharacterName) {
-    const name = normalizeCharacterName(characterName);
-    if (!name.ok) return name;
-    return { ok: true, state: { sceneId: card.next, characterName: name.name } };
+    const normalized = normalizeCharacterName(characterName);
+    if (!normalized.ok) return normalized;
+    name = normalized.name;
   }
-  return { ok: true, state: { sceneId: card.next, characterName: state.characterName } };
+  const log = [...state.log, ...beatEntries(beat)];
+  if (card.say !== undefined)
+    log.push({ beatId: beat.id, speaker: PLAYER_SPEAKER, text: card.say });
+  return { ok: true, state: { beatId: card.next, characterName: name, log } };
 };

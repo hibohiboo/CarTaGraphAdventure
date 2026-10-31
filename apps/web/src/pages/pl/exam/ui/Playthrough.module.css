@@ -1,0 +1,32 @@
+/* 試験のシーン：卓の上に、ビートを並べる */
+.table {
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: clamp(20px, 5vw, 48px) var(--page-gutter) 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.header {
+  text-align: center;
+}
+.scenario {
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  color: var(--thread);
+}
+.title {
+  margin-top: 4px;
+  font-size: clamp(1.6rem, 6vw, 2.2rem);
+  color: var(--parchment-text);
+}
+/* 見出しの下の金糸の飾り線 */
+.title::after {
+  content: "";
+  display: block;
+  width: 120px;
+  height: 1px;
+  margin: 12px auto 0;
+  background: linear-gradient(to right, transparent, var(--thread), transparent);
+}

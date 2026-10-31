@@ -19,7 +19,7 @@ export function NameForm({ reason, onSubmit }: Props) {
   const [name, setName] = useState('');
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
-  // 用紙は手札の下に出るので、スマホでは画面の外になる。出したときに記入欄へ移る
+  // 用紙は手札の上に出るが、スマホでは画面の外になることがある。出したときに記入欄へ移る
   useEffect(() => {
     inputRef.current?.focus();
   }, []);

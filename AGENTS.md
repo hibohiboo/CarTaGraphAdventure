@@ -6,7 +6,7 @@ Claude Code は `CLAUDE.md` からこのファイルを読み込む。
 
 ## いま作っているもの
 
-プレイヤーとして遊べる土台から作る。どのシーンでも、プレイヤーは手札を出すか GM へ提案するかを選び、提案は `docs/backlog/` の要望になる（`docs/cartagraph/index.md`）。進む順は `docs/roadmap.md`。GM・セッション・複数のプレイヤー・シナリオ製作の画面・バックエンドは、要望になるまで作らない（`docs/notes/roadmap.md`「今は作らないもの」）。
+プレイヤーとして遊べる土台から作る。どのビート（シーンの中の一区切り）でも、プレイヤーは手札を出すか GM へ提案するかを選び、提案は `docs/backlog/` の要望になる（`docs/cartagraph/index.md`）。進む順は `docs/roadmap.md`。GM・セッション・複数のプレイヤー・シナリオ製作の画面・バックエンドは、要望になるまで作らない（`docs/notes/roadmap.md`「今は作らないもの」）。
 
 ## 技術スタック
 

@@ -1,0 +1,68 @@
+/* 会話に出る縦長のカード（NPC と自分で共通。縦横比は手札と同じ 5:7）。話している人は枠が光る */
+.card {
+  --portrait-size: clamp(44px, 12vw, 60px);
+  aspect-ratio: var(--card-ratio);
+  width: clamp(92px, 26vw, 120px);
+  background: var(--card);
+  color: var(--ink);
+  border-radius: var(--radius-card);
+  box-shadow:
+    inset 0 0 0 4px var(--card),
+    inset 0 0 0 5px var(--card-edge),
+    var(--shadow-card-sm);
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .card {
+    transition:
+      opacity 160ms ease,
+      transform 160ms ease;
+  }
+}
+.card[data-active="false"] {
+  opacity: 0.6;
+}
+.card[data-active="true"] {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  transform: translateY(-3px);
+}
+
+.silhouette {
+  flex: none;
+  width: var(--portrait-size);
+  height: var(--portrait-size);
+  border-radius: 50%;
+  background: var(--ink-soft);
+  color: var(--card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(var(--portrait-size) * 0.6);
+}
+.name {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+.title {
+  font-size: 0.7rem;
+  color: var(--ink-soft);
+}
+.description {
+  font-size: 0.65rem;
+  line-height: 1.4;
+  color: var(--ink-soft);
+}
+@media (max-width: 480px) {
+  .description {
+    display: none;
+  }
+}

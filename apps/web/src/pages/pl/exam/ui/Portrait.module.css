@@ -1,0 +1,16 @@
+/* NPC の絵：丸い枠にアイコンか画像。大きさは親の --portrait-size で決める */
+.portrait {
+  flex: none;
+  width: var(--portrait-size, 56px);
+  height: var(--portrait-size, 56px);
+  border-radius: 50%;
+  border: 1px solid var(--thread);
+  background: var(--felt-panel-2);
+  color: var(--thread);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  object-fit: cover;
+  font-size: calc(var(--portrait-size, 56px) * 0.55);
+}

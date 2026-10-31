@@ -1,33 +1,64 @@
 {
   "id": "adventurer-exam",
   "title": "冒険者登録の試験",
-  "start": "reception",
+  "start": "entrance",
+  "npcs": [
+    {
+      "id": "milda",
+      "name": "ミルダ",
+      "title": "試験官",
+      "description": "ギルドの登録を受け持つ女性",
+      "portrait": { "type": "icon", "name": "GiBookCover" }
+    }
+  ],
   "scenes": [
     {
-      "id": "reception",
+      "id": "guild-reception",
       "title": "ギルドの受付",
-      "text": [
-        "重い扉を押し開けると、酒と油の匂いがした。冒険者ギルドの受付には、書類の束を前にした女性がひとり座っている。",
-        "「登録の試験を受けに来たのね。わたしは試験官のミルダ。まずは、この登録用紙に名前を書いて」",
-        "差し出された用紙を受け取ると、ミルダは目を細めて付け加えた。「言っておくけど、試験はもう始まっているわよ」"
-      ],
-      "hand": [
+      "beats": [
         {
-          "id": "introduce",
-          "title": "名乗る",
-          "text": "胸を張って、自分の名前を告げる。",
-          "next": "exam-begins",
-          "asksCharacterName": true
+          "id": "entrance",
+          "layout": "paper",
+          "text": [
+            "重い扉を押し開けると、酒と油の匂いがした。冒険者ギルドの受付には、書類の束を前にした女性がひとり座っている。"
+          ],
+          "hand": [
+            {
+              "id": "approach",
+              "title": "受付へ進む",
+              "text": "受付の女性のもとへ歩み寄る。",
+              "next": "reception"
+            }
+          ]
+        },
+        {
+          "id": "reception",
+          "layout": "conversation",
+          "lines": [
+            { "speaker": "milda", "text": "登録の試験を受けに来たのね。わたしは試験官のミルダ。" },
+            { "speaker": "milda", "text": "まずは、この登録用紙に名前を書いて" },
+            { "speaker": "milda", "text": "言っておくけど、試験はもう始まっているわよ" }
+          ],
+          "hand": [
+            {
+              "id": "introduce",
+              "title": "名乗る",
+              "text": "胸を張って、自分の名前を告げる。",
+              "next": "exam-begins",
+              "asksCharacterName": true,
+              "say": "{characterName}"
+            }
+          ]
+        },
+        {
+          "id": "exam-begins",
+          "layout": "conversation",
+          "lines": [
+            { "speaker": "milda", "text": "{characterName}さんね。では、試験を始めましょう" }
+          ],
+          "hand": []
         }
       ]
-    },
-    {
-      "id": "exam-begins",
-      "title": "試験の始まり",
-      "text": [
-        "「{characterName}さんね。では、試験を始めましょう」ミルダは用紙を受け取り、立ち上がった。"
-      ],
-      "hand": []
     }
   ]
 }
