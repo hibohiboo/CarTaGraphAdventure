@@ -10,6 +10,13 @@ describe('API の一覧', () => {
     expect(new Set(keys).size).toBe(keys.length);
   });
 
+  it('提案を書く POST /proposals が、201・403・422・500 の応答つきで載っている', () => {
+    const proposals = endpoints.find((e) => routeKey(e) === 'POST /proposals');
+    expect(proposals).toBeDefined();
+    expect(Object.keys(proposals?.responses ?? {}).sort()).toEqual(['201', '403', '422', '500']);
+    expect(proposals?.body).toBeDefined();
+  });
+
   it('パスは / で始まり、/api を付けない', () => {
     for (const e of endpoints) {
       expect(e.path).toMatch(/^\//);

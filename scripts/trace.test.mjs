@@ -2,7 +2,7 @@
 
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { frontmatterValue, parseTrace } from './trace.mjs';
+import { frontmatterNested, frontmatterValue, parseProposalFile, parseTrace } from './trace.mjs';
 
 describe('frontmatterValue', () => {
   it('引用符・コメントを外し、frontmatter の外（本文）は読まない', () => {
@@ -11,6 +11,70 @@ describe('frontmatterValue', () => {
     assert.equal(frontmatterValue(md, 'status'), '完了');
     assert.equal(frontmatterValue(md, 'summary'), '');
     assert.equal(frontmatterValue('status: 完了\n', 'status'), '');
+  });
+});
+
+describe('frontmatterValue（CRLF）', () => {
+  it('CRLF の行末でも値を読める（引用符もコメントも外す）', () => {
+    const md = '---\r\ntitle: "題"\r\nstatus: 完了 # 暫定\r\n---\r\n\r\n本文\r\n';
+    assert.equal(frontmatterValue(md, 'title'), '題');
+    assert.equal(frontmatterValue(md, 'status'), '完了');
+  });
+});
+
+describe('frontmatterNested', () => {
+  it('入れ子のキーの値を読む（引用符を外す）。入れ子が無いキーは null', () => {
+    const md =
+      '---\ntitle: 題\nproposal:\n  scenario: adventurer-exam\n  beat: "reception"\nupdated: 2026-10-31\n---\n';
+    assert.deepEqual(frontmatterNested(md, 'proposal'), {
+      scenario: 'adventurer-exam',
+      beat: 'reception',
+    });
+    assert.equal(frontmatterNested(md, 'trace'), null);
+    assert.equal(frontmatterNested('本文だけ\n', 'proposal'), null);
+  });
+
+  it('入れ子の外のキーや本文は拾わず、CRLF でも読める', () => {
+    const md = '---\r\nproposal:\r\n  scenario: s\r\nbeat: top\r\n---\r\n\r\n  beat: body\r\n';
+    assert.deepEqual(frontmatterNested(md, 'proposal'), { scenario: 's' });
+  });
+});
+
+const proposal = (extra = '') =>
+  `---\ntitle: "提案：質問"\nmilestone: proposal-loop\nstatus: 未着手\nsummary: "質問したい"\nproposal:\n  scenario: adventurer-exam\n  scene: guild-reception\n  beat: reception\ntrace:\n  usecases: [PL-2]\n  screens: [/exam]\nupdated: 2026-10-31\n---\n\n# 提案\n${extra}`;
+
+describe('parseProposalFile', () => {
+  it('書いたものを読み戻せる', () => {
+    assert.deepEqual(parseProposalFile(proposal()), {
+      scenario: 'adventurer-exam',
+      beat: 'reception',
+      status: '未着手',
+      summary: '質問したい',
+    });
+  });
+
+  it('人間が status を「完了」「見送り」に直したものを読める', () => {
+    for (const status of ['完了', '見送り']) {
+      const md = proposal().replace('status: 未着手', `status: ${status}`);
+      assert.equal(parseProposalFile(md)?.status, status);
+    }
+  });
+
+  it('CRLF で保存したものを読める', () => {
+    const md = proposal().replaceAll('\n', '\r\n');
+    assert.deepEqual(parseProposalFile(md), {
+      scenario: 'adventurer-exam',
+      beat: 'reception',
+      status: '未着手',
+      summary: '質問したい',
+    });
+  });
+
+  it('proposal: の無い要望・scenario か beat の欠けたものは null', () => {
+    assert.equal(parseProposalFile('---\ntitle: 題\nstatus: 完了\n---\n本文\n'), null);
+    assert.equal(parseProposalFile(proposal().replace('  beat: reception\n', '')), null);
+    assert.equal(parseProposalFile(proposal().replace('  scenario: adventurer-exam\n', '')), null);
+    assert.equal(parseProposalFile('本文だけ\n'), null);
   });
 });
 

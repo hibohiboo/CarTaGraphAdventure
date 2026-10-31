@@ -167,6 +167,11 @@ describe('proposalSummary', () => {
     expect(proposalSummary(`${'あ'.repeat(99)}👨‍👩‍👧‍👦あ`)).toBe(`${'あ'.repeat(99)}👨‍👩‍👧‍👦…`);
   });
 
+  it('タブなどの制御文字は空白になる', () => {
+    expect(proposalSummary('a\tb\u0007c')).toBe('a b c');
+    expect(proposalTitle('a\tb')).toBe('提案：a b');
+  });
+
   it('改行（LF・CRLF）は空白1つになる', () => {
     expect(proposalSummary('a\nb\r\nc')).toBe('a b c');
   });

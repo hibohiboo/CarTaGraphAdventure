@@ -38,7 +38,12 @@ export const propose = (
 };
 
 // YAML の二重引用符の中でエスケープが要らなくなるように、全角に置き換える
-const yamlSafe = (text: string): string => text.replaceAll('"', '＂').replaceAll('\\', '＼');
+// 制御文字（タブなど）は JSON.stringify が \t のように書き、読み手によって値が変わるので、空白にする
+const yamlSafe = (text: string): string =>
+  text
+    .replaceAll('"', '＂')
+    .replaceAll('\\', '＼')
+    .replace(/\p{Cc}/gu, ' ');
 
 const shorten = (text: string, max: number): string => {
   const cut = truncateGraphemes(text, max);
