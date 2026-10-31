@@ -1,12 +1,12 @@
 ---
 title: NPC と会話する場面を、会話の画面で遊べる
 milestone: playable-scene
-status: 検討中
+status: 完了
 summary: 試験官ミルダと話す場面では、画面の上に NPC のカード、真ん中にチャットアプリのような会話、下に手札と自分のキャラクターのカードを並べる。会話の前（ギルドに入るところ）は今の紙面のまま。
 plans:
   - 2026-10-31-P5-会話の画面.md
 cycles:
-  - { name: P5 会話の画面, status: 検討中 }
+  - { name: P5 会話の画面, status: 完了, pr: 3 }
 trace:
   usecases: [PL-1]
   screens: [/exam]
