@@ -1,8 +1,10 @@
 // 会話の画面の境界（台詞の数・送り位置・履歴の範囲・NPC のカード・スクロール・絵）
 // （docs/plans/2026-10-31-P5-会話の画面.md D2・D3・D6・テスト14〜16・18・22〜24）
+import { adventurerExam } from '@cartagraph/domain/scenario/adventurer-exam';
 import { cleanup, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { portraitIcons } from '@/pages/pl/exam/ui/portraitIcons';
 import { renderPlay } from './renderPlay';
 import { screenScenario } from './screenScenario';
 
@@ -167,6 +169,31 @@ describe('Portrait', () => {
     } finally {
       spy.mockRestore();
     }
+  });
+});
+
+describe('同じ会話のビートへ戻る', () => {
+  it('自分自身を next に持つカードを出すと、台詞が最初から出直す（送り位置が戻る）', async () => {
+    const loop = structuredClone(screenScenario);
+    const x3 = loop.scenes[0]!.beats.find((beat) => beat.id === 'x3')!;
+    x3.hand[0]!.next = 'x3';
+    const user = userEvent.setup();
+    renderPlay(loop);
+    await finishAndPlay(user, 1, 'c1');
+    await finishAndPlay(user, 3, 'c2');
+    await finishAndPlay(user, 2, 'c3');
+    expect(screen.getByRole('button', { name: NEXT })).toBeInTheDocument();
+    expect(hasCard('c3')).not.toBeInTheDocument();
+  });
+});
+
+describe('登録表', () => {
+  it('実データと画面のテスト用シナリオの NPC のアイコンは、すべて登録表にある', () => {
+    const names = [...adventurerExam.npcs, ...screenScenario.npcs].flatMap((npc) =>
+      npc.portrait.type === 'icon' ? [npc.portrait.name] : [],
+    );
+    expect(names.length).toBeGreaterThan(0);
+    for (const name of names) expect(portraitIcons).toHaveProperty(name);
   });
 });
 

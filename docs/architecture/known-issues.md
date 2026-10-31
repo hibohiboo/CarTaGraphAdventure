@@ -42,11 +42,12 @@
 - 同：`biome.json` のテストの override の `apps/web/e2e/**`・`src/test/**` は、テストでないヘルパーにも `useExpect` などがかかる（`expect` を持たないヘルパーは対象外で、いまは無害）
 - 同：`packages/schemas/src/body/parse.ts` のコメント「MSW のハンドラ。まだ無い」は、ハンドラを足したときに直す
 - 同：進化ログ（48件）と `docs/backlog/dependency-upgrade.md`（`useConsistentTestIt` 32件）の件数は、`smoke.test.ts` を含めるかの数え方の違い
-- P4 の実装レビュー（2026-10-31）：`ExamPage.tsx` は、名前の入力欄を開いていないときの断る理由（`unknownCard`）を画面に出さない。名前の要らないカードを足すときに見る
-- 同：`ExamPage.tsx` はシーンが見つからないと描画中に例外を投げ、エラー境界が無いので白くなる（参照の切れは読み込みで止まるので、今は届かない）
+- P4 の実装レビュー（2026-10-31）：`Playthrough.tsx` は、名前の入力欄を開いていないときの断る理由（`unknownCard`）を画面に出さない。名前の要らないカードを足すときに見る
+- 同：`Playthrough.tsx` はビートが見つからないと描画中に例外を投げ、エラー境界が無いので白くなる（参照の切れは読み込みで止まるので、今は届かない）
 - 同：`transition.ts` は `Intl.Segmenter` をモジュールの読み込み時に作る。無いブラウザではアプリ全体が開かない（対象のブラウザの下限は決めていない）
 - 同：`scenario/model.ts` の `id`・`title` に空文字を断る決まりが無い
 - P5 の実装（2026-10-31）：`PlayState.log` は仮の形（イベントの列を作るときに置き換える。リロードで消える）。`react-icons` は 5.7.0（2026-06-30 のリリース）を入れた。`gi` は全アイコンが1つのモジュールにあるので、`portraitIcons.ts` に使う名前だけを import している
+- P5 の実装レビュー（2026-10-31）：会話のビートが自分自身か、戻る道で同じビートに戻ると、ログに同じ台詞が二重に並ぶ（`playCard` は出すたびにビートの内容をログに足す。イベントの列に置き換えるときに見直す）。`{characterName}` を名乗る前の文や `say` に書いても読み込みで止まらない（実データはテスト1が守る）。ログの `beatId` はスキーマで検査していない
 - 同：`scenario/test-scenario.ts` はテスト専用だが `*.test.ts` でないので、`exports` から import でき、テストの override もかからない
 - 同：`scenario/model.ts` の `playStateSchema` は型を導くのにだけ使い、`parse` していない（イベントの列を作るときに見る）
 - 同：`examScene.test.tsx` の `new RegExp(introduce.title)` は題名をエスケープしていない。二重押しのテストは、1回目でフォームが外れるので2回目の送信が届いているかは確かめていない。画面で10文字ちょうどが通ることは確かめていない（ドメインのテストが見ている）

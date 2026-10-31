@@ -54,14 +54,14 @@ export function Playthrough({ scenario }: { scenario: Scenario }) {
       </header>
       {beat.layout === 'paper' ? (
         <PaperBeat
-          key={beat.id}
+          key={`${beat.id}:${state.log.length}`}
           beat={beat}
           characterName={state.characterName}
           handProps={handProps}
         />
       ) : (
         <ConversationBeat
-          key={beat.id}
+          key={`${beat.id}:${state.log.length}`}
           beat={beat}
           npcs={scenario.npcs}
           history={conversationHistory(scenario, state)}

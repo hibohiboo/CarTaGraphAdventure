@@ -1,4 +1,4 @@
-/* 会話のビート：NPC の帯・会話エリア・自分のカードと手札を縦に並べる */
+/* 会話のビート：NPC のカード・会話エリア・手札と自分のカードを縦に並べる */
 .conversation {
   display: flex;
   flex-direction: column;

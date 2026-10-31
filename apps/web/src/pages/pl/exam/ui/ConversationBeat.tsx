@@ -22,7 +22,7 @@ interface Props {
   handProps: HandProps;
 }
 
-// 会話のビート：上に NPC の帯、真ん中に会話、下に自分のカードと手札。台詞は「次へ」で1つずつ出す。
+// 会話のビート：上に NPC のカード、真ん中に会話、下に手札と自分のカード。台詞は「次へ」で1つずつ出す。
 // 送り位置はこの部品の状態。親が key={beat.id} を付けて描くので、ビートが変わると最初に戻る
 export function ConversationBeat({ beat, npcs, history, characterName, handProps }: Props) {
   const [revealed, setRevealed] = useState(1);
@@ -44,7 +44,7 @@ export function ConversationBeat({ beat, npcs, history, characterName, handProps
     return npc;
   });
 
-  const rows = [...history, ...beat.lines.slice(0, revealed).map((line) => ({ ...line }))];
+  const rows = [...history, ...beat.lines.slice(0, revealed)];
 
   return (
     <div className={styles.conversation}>
