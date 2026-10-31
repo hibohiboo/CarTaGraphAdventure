@@ -5,6 +5,14 @@
   gap: 16px;
 }
 
+/* 話している NPC のカードを横に並べる */
+.npcs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
 /* 会話エリア：残りの高さを占め、あふれたらスクロールする */
 .log {
   min-height: 160px;
@@ -77,6 +85,7 @@
 .bottom {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 12px;
 }
 .handArea {

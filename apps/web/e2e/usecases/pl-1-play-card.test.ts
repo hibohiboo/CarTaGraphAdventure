@@ -30,7 +30,7 @@ test('試験の受付で名乗り、次の台詞で名前を呼ばれる', { tag
   await page.getByRole('button', { name: approach.title }).click();
   const log = page.getByRole('log');
   await expect(log.getByText(reception.lines[0]!.text)).toBeVisible();
-  await expect(page.getByRole('region', { name: '話している相手' })).toContainText(milda.name);
+  await expect(page.getByRole('article', { name: milda.name })).toBeVisible();
 
   await test.step('PL-1 名乗るを出す', async () => {
     const introduceButton = page.getByRole('button', { name: introduce.title });

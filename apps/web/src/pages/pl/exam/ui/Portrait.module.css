@@ -1,8 +1,8 @@
-/* NPC の絵：丸い枠にアイコンか画像 */
+/* NPC の絵：丸い枠にアイコンか画像。大きさは親の --portrait-size で決める */
 .portrait {
   flex: none;
-  width: 56px;
-  height: 56px;
+  width: var(--portrait-size, 56px);
+  height: var(--portrait-size, 56px);
   border-radius: 50%;
   border: 1px solid var(--thread);
   background: var(--felt-panel-2);
@@ -12,5 +12,5 @@
   justify-content: center;
   overflow: hidden;
   object-fit: cover;
-  font-size: 1.8rem;
+  font-size: calc(var(--portrait-size, 56px) * 0.55);
 }

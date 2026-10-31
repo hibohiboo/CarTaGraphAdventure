@@ -29,8 +29,6 @@ const start = () => {
   return user;
 };
 
-const npcName = () => screen.getByRole('region', { name: '話している相手' });
-
 // biome-ignore lint/correctness/usePlaywrightValidDescribeCallback: Vitest の describe は第2引数にオプション（tags）を取れる
 describe('台詞の数の境界', { tags: ['rule:index/ビートの見せ方'] }, () => {
   it('台詞1つ・手札ありのビートは、入った時点で「次へ」が無く手札が出ている', () => {
@@ -116,30 +114,48 @@ describe('台詞の送りと履歴', { tags: ['rule:index/ビートの見せ方'
 });
 
 describe('NPC のカード', () => {
-  it('直近に話した人に変わる。次のビートに移ると、そのビートの最初の話し手になる', async () => {
+  const card = (name: string) => screen.getByRole('article', { name });
+  const expectCurrent = (name: string, current: boolean) =>
+    expect(card(name)).toHaveAttribute('aria-current', String(current));
+
+  it('そのビートに出る人のカードが並び、直近に話した人のカードだけが光る。次のビートではそのビートの最初の話し手になる', async () => {
     const user = start();
-    await finishAndPlay(user, 1, 'c1');
-    expect(within(npcName()).getByText('エー')).toBeInTheDocument();
+    expect(screen.queryByRole('article', { name: 'ビー' })).not.toBeInTheDocument();
+    expectCurrent('エー', true);
+    await play(user, 'c1');
+    await screen.findByText('x2 の台詞 1');
+    expectCurrent('エー', true);
+    expectCurrent('ビー', false);
     await next(user);
-    expect(within(npcName()).getByText('ビー')).toBeInTheDocument();
+    expectCurrent('エー', false);
+    expectCurrent('ビー', true);
     await next(user);
-    expect(within(npcName()).getByText('エー')).toBeInTheDocument();
+    expectCurrent('エー', true);
+    expectCurrent('ビー', false);
     await play(user, 'c2');
     await screen.findByText('x3 の台詞 1');
-    expect(within(npcName()).getByText('ビー')).toBeInTheDocument();
+    expectCurrent('エー', false);
+    expectCurrent('ビー', true);
+  });
+
+  it('名前・肩書・ひとことが出る', () => {
+    start();
+    expect(within(card('エー')).getByText('肩書A')).toBeInTheDocument();
+    expect(within(card('エー')).getByText('ひとことA')).toBeInTheDocument();
   });
 });
 
 describe('Portrait', () => {
   it('icon は svg で描き、image は <img>（代替テキストは NPC の名前）で描く', async () => {
     const user = start();
-    await finishAndPlay(user, 1, 'c1');
-    expect(npcName().querySelector('svg')).not.toBeNull();
-    expect(npcName().querySelector('img')).toBeNull();
-    await next(user);
-    const img = within(npcName()).getByRole('img', { name: 'ビー' });
-    expect(img).toHaveAttribute('src', '/portrait-b.png');
-    expect(npcName().querySelector('svg')).toBeNull();
+    await play(user, 'c1');
+    await screen.findByText('x2 の台詞 1');
+    const a = screen.getByRole('article', { name: 'エー' });
+    const b = screen.getByRole('article', { name: 'ビー' });
+    expect(a.querySelector('svg')).not.toBeNull();
+    expect(a.querySelector('img')).toBeNull();
+    expect(within(b).getByRole('img', { name: 'ビー' })).toHaveAttribute('src', '/portrait-b.png');
+    expect(b.querySelector('svg')).toBeNull();
   });
 
   it('登録表に無いアイコンの名前は例外になる', () => {

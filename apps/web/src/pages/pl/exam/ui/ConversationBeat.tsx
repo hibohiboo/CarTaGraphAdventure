@@ -37,14 +37,22 @@ export function ConversationBeat({ beat, npcs, history, characterName, handProps
   }, [revealed]);
 
   const speakerId = latestSpeaker(beat.lines, revealed);
-  const speaker = npcs.find((npc) => npc.id === speakerId);
-  if (!speaker) throw new Error(`NPC が見つからない：${speakerId}`);
+  // このビートに出る NPC を、出てくる順に並べる。直近に話した人のカードが光る
+  const participants = [...new Set(beat.lines.map((line) => line.speaker))].map((id) => {
+    const npc = npcs.find((n) => n.id === id);
+    if (!npc) throw new Error(`NPC が見つからない：${id}`);
+    return npc;
+  });
 
   const rows = [...history, ...beat.lines.slice(0, revealed).map((line) => ({ ...line }))];
 
   return (
     <div className={styles.conversation}>
-      <NpcCard npc={speaker} />
+      <div className={styles.npcs}>
+        {participants.map((npc) => (
+          <NpcCard key={npc.id} npc={npc} active={npc.id === speakerId} />
+        ))}
+      </div>
       <div ref={logRef} className={styles.log} role="log" aria-label="会話">
         {rows.map((row, i) => (
           <p
