@@ -1,10 +1,12 @@
 ---
 title: GM へ提案した文章が、要望のファイルとして保存できる
 milestone: playable-scene
-status: 進行中
+status: 完了
 summary: どのビートでも「GM への提案」のカードから文章を書いて提案でき、開発サーバーが docs/backlog/ に要望のファイルとして書く。提案したビートは、その要望が完了か見送りになるまで「提案待ち」で止まる。公開版では提案のカードを出さない。
 plans:
   - 2026-10-31-P6-提案の保存.md
+cycles:
+  - { name: P6 提案の保存, status: 完了, pr: 4 }
 trace:
   usecases: [PL-1, PL-2]
   screens: [/exam]
