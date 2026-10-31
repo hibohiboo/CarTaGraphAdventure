@@ -10,6 +10,10 @@ export type PostProposalResult = { ok: true; file: string } | { ok: false; messa
 /** 提案を送る関数。画面のテストはこれを差し替える */
 export type SendProposal = (request: ProposalRequest) => Promise<PostProposalResult>;
 
+// 書いた後で応答が途切れたときは、保存済みのことがある。再送すると同じ提案のファイルが増えるので、先に確かめてもらう
+const MAYBE_SAVED =
+  '保存済みかもしれません。docs/backlog/ を確かめてから、もう一度提案してください';
+
 const messageOf = (value: unknown): string | null =>
   typeof value === 'object' &&
   value !== null &&
@@ -30,10 +34,10 @@ export const postProposal: SendProposal = async (request) => {
     if (res.status === 201) {
       const created = proposalCreatedSchema.safeParse(body);
       if (created.success) return { ok: true, file: created.data.file };
-      return { ok: false, message: '応答の形が正しくありません' };
+      return { ok: false, message: `応答の形が正しくありません（${MAYBE_SAVED}）` };
     }
     return { ok: false, message: messageOf(body) ?? `状態コード ${res.status}` };
   } catch {
-    return { ok: false, message: '通信に失敗しました' };
+    return { ok: false, message: `通信に失敗しました（${MAYBE_SAVED}）` };
   }
 };

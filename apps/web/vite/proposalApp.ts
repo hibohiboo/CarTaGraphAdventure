@@ -128,7 +128,7 @@ export const createProposalApp = ({ backlogDir, now = () => new Date() }: Propos
       scene: located.scene,
       beat: located.beat,
       screen: entry.screen,
-      text: result.event.type === 'proposed' ? result.event.text : text,
+      text: result.event.text,
       events: result.events,
       now: at,
     });

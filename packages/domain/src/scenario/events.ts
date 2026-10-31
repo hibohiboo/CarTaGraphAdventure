@@ -23,8 +23,8 @@ export const replay = (scenario: Scenario, events: readonly PlayEvent[]): Replay
 };
 
 /** 命令の結果。成功なら、イベントを足した列と、足したイベント */
-export type DecideResult<Reason extends string> =
-  | { ok: true; events: PlayEvent[]; event: PlayEvent }
+export type DecideResult<Reason extends string, Added extends PlayEvent = PlayEvent> =
+  | { ok: true; events: PlayEvent[]; event: Added }
   | { ok: false; reason: Reason };
 
 export type DecidePlayCardReason = PlayCardFailure | 'awaitingProposal' | 'invalidEvents';

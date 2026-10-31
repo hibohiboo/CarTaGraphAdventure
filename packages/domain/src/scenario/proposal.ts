@@ -19,17 +19,26 @@ export const normalizeProposalText = (
   return { ok: true, text };
 };
 
+type ProposedEvent = Extract<PlayEvent, { type: 'proposed' }>;
+
 /** 提案する。replay の終わりのビートで proposed を足す */
 export const propose = (
   scenario: Scenario,
   events: readonly PlayEvent[],
   rawText: string,
-): DecideResult<'textRequired' | 'textTooLong' | 'invalidEvents'> => {
+): DecideResult<'textRequired' | 'textTooLong' | 'invalidEvents', ProposedEvent> => {
   const current = replay(scenario, events);
   if (!current.ok) return { ok: false, reason: 'invalidEvents' };
+  // 前の提案の文も、いまの決まりに合っているものだけ（列の経由で、4000文字の決まりを素通りさせない）
+  const earlierOk = events.every((e) => {
+    if (e.type !== 'proposed') return true;
+    const earlier = normalizeProposalText(e.text);
+    return earlier.ok && earlier.text === e.text;
+  });
+  if (!earlierOk) return { ok: false, reason: 'invalidEvents' };
   const normalized = normalizeProposalText(rawText);
   if (!normalized.ok) return { ok: false, reason: normalized.reason };
-  const event: PlayEvent = {
+  const event: ProposedEvent = {
     type: 'proposed',
     beatId: current.state.beatId,
     text: normalized.text,
@@ -47,7 +56,8 @@ const yamlSafe = (text: string): string =>
     .replaceAll('\\', '＼')
     .replaceAll('<', '＜')
     .replaceAll('>', '＞')
-    .replace(/\p{Cc}/gu, ' ');
+    // 行の区切りの U+2028・U+2029 と、対の無いサロゲートも、YAML で読めなくなるので空白にする
+    .replace(/\p{Cc}|\u2028|\u2029|\p{Cs}/gu, ' ');
 
 const shorten = (text: string, max: number): string => {
   const cut = truncateGraphemes(text, max);

@@ -74,6 +74,20 @@ describe('propose', { tags: ['rule:index/提案'] }, () => {
     expect(propose(adventurerExam, [bad], 'x')).toEqual({ ok: false, reason: 'invalidEvents' });
   });
 
+  it('前の proposed の文が、いまの決まりに合わない（空・4001文字・前後に空白）列は invalidEvents', () => {
+    const bad = (text: string): PlayEvent[] => [
+      approach,
+      { type: 'proposed', beatId: 'reception', text },
+    ];
+    for (const text of ['', ' 前後に空白 ', 'あ'.repeat(4001)]) {
+      expect(propose(adventurerExam, bad(text), 'x')).toEqual({
+        ok: false,
+        reason: 'invalidEvents',
+      });
+    }
+    expect(propose(adventurerExam, bad('あ'.repeat(4000)), 'x').ok).toBe(true);
+  });
+
   it('渡した列を書き換えない', () => {
     const events = [approach];
     propose(adventurerExam, events, 'x');
@@ -170,6 +184,10 @@ describe('proposalSummary', () => {
   it('< と > は全角になる（VitePress が frontmatter を埋め込む <script> を文の </script> が閉じないように）', () => {
     expect(proposalSummary('<script>alert(1)</script>')).toBe('＜script＞alert(1)＜/script＞');
     expect(proposalTitle('a<b>c')).toBe('提案：a＜b＞c');
+  });
+
+  it('U+2028・U+2029・対の無いサロゲートは空白になる', () => {
+    expect(proposalSummary('a\u2028b\u2029c\ud83dd')).toBe('a b c d');
   });
 
   it('タブなどの制御文字は空白になる', () => {

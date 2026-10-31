@@ -157,7 +157,7 @@ export const playStateSchema = z.strictObject({
   beatId: z.string(),
   /** まだ名乗っていなければ null */
   characterName: z.string().nullable(),
-  /** 仮の形：イベントの列（core-loop）を作るときに置き換える。docs/open-questions.md「遊んだことの持ち方」 */
+  /** 仮の形：会話の履歴の入れ物。イベントの列（PlayEvent）とは別で、置き換えは core-loop。docs/open-questions.md「遊んだことの持ち方の残り」 */
   log: z.array(logEntrySchema),
 });
 export type PlayState = z.infer<typeof playStateSchema>;

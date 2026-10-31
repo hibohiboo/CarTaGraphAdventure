@@ -84,7 +84,7 @@ export function Playthrough({ scenario, proposals, canPropose, sendProposal }: P
     setSending(true);
     const sent = await sendProposal({
       scenarioId: scenario.id,
-      text: result.event.type === 'proposed' ? result.event.text : rawText,
+      text: result.event.text,
       events,
     }).catch(() => ({ ok: false as const, message: '通信に失敗しました' }));
     setSending(false);

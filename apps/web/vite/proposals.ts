@@ -41,7 +41,15 @@ const readPending = (dir: string, warn: (message: string) => void): PendingPropo
     throw e;
   }
   return names.sort().flatMap((name) => {
-    const proposal = parseProposalFile(readFileSync(`${dir}/${name}`, 'utf8'));
+    let source: string;
+    try {
+      source = readFileSync(`${dir}/${name}`, 'utf8');
+    } catch {
+      // 1件を読めないだけで、ページ全体を落とさない
+      warn(`${name} を読めない。提案待ちに数えない`);
+      return [];
+    }
+    const proposal = parseProposalFile(source);
     if (!proposal || DONE_STATUSES.includes(proposal.status)) return [];
     if (!KNOWN_STATUSES.includes(proposal.status)) {
       warn(`${name} の状態「${proposal.status}」は要望の状態の一覧に無い。未完了として扱う`);
@@ -86,6 +94,8 @@ export const proposals = ({ backlogDir }: ProposalsPluginOptions = {}): Plugin =
           const app = (mod.createProposalApp as typeof createProposalApp)({ backlogDir: writeDir });
           await getRequestListener(app.fetch)(req, res);
         } catch {
+          // 応答を書き始めた後の誤りは、ヘッダーを書き直せない
+          if (res.headersSent) return res.end();
           res.statusCode = 500;
           res.setHeader('content-type', 'application/json; charset=utf-8');
           res.end(JSON.stringify({ message: '提案の口を読み込めませんでした' }));

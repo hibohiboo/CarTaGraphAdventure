@@ -54,10 +54,11 @@ describe('postProposal', () => {
       'fetch',
       vi.fn(async () => json(201, { path: 'x' })),
     );
-    expect(await postProposal(request)).toEqual({
-      ok: false,
-      message: '応答の形が正しくありません',
-    });
+    const result = await postProposal(request);
+    expect(result.ok).toBe(false);
+    // 書いた後で応答が崩れたときは、保存済みかもしれないことを伝える（再送で同じ提案が増えないように）
+    expect(!result.ok && result.message).toContain('応答の形が正しくありません');
+    expect(!result.ok && result.message).toContain('保存済みかもしれません');
   });
 
   it('通信の失敗も理由にして返す（例外にしない）', async () => {
@@ -67,6 +68,9 @@ describe('postProposal', () => {
         throw new TypeError('Failed to fetch');
       }),
     );
-    expect(await postProposal(request)).toEqual({ ok: false, message: '通信に失敗しました' });
+    const result = await postProposal(request);
+    expect(result.ok).toBe(false);
+    expect(!result.ok && result.message).toContain('通信に失敗しました');
+    expect(!result.ok && result.message).toContain('保存済みかもしれません');
   });
 });
