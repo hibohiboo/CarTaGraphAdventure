@@ -30,6 +30,12 @@
 .card:focus-visible {
   transform: translateY(-6px);
 }
+/* 提案待ち：薄くして押せなくする */
+.card:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
 .card[data-selected="true"] {
   transform: translateY(-10px);
   border-color: var(--focus);

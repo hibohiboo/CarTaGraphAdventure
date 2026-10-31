@@ -1,7 +1,17 @@
 import type { Card } from '@cartagraph/domain/scenario/model';
+import { AwaitingProposal } from './AwaitingProposal';
 import { HandCard } from './HandCard';
 import styles from './HandZone.module.css';
 import { NameForm } from './NameForm';
+import { ProposalForm, type ProposalOutcome } from './ProposalForm';
+
+/** 提案のカードと入力欄。公開版では null（提案のカードを出さない） */
+export interface ProposalProps {
+  open: boolean;
+  onOpen: () => void;
+  onCancel: () => void;
+  onSubmit: (text: string) => Promise<ProposalOutcome>;
+}
 
 export interface HandProps {
   hand: Card[];
@@ -9,22 +19,35 @@ export interface HandProps {
   namingCardId: string | null;
   /** 断られた理由 */
   reason: Parameters<typeof NameForm>[0]['reason'];
+  /** 提案待ちの文。空でなければ提案待ちで、手札は出せない */
+  awaiting: string[];
+  /** 提案を送っている間は、手札を出せない */
+  busy: boolean;
+  proposal: ProposalProps | null;
   onPlay: (card: Card) => void;
   onSubmitName: (name: string) => void;
 }
 
-// 手札の置き場。紙面・会話のどちらのビートからも使う。会話で台詞を読んでいる間は、手札を隠して提案の仮の表示だけを出す
+// 手札の置き場。紙面・会話のどちらのビートからも使う。会話で台詞を読んでいる間は、手札と提案のカードを隠す
 export function HandZone({
   hand,
   namingCardId,
   reason,
+  awaiting,
+  busy,
+  proposal,
   onPlay,
   onSubmitName,
   showHand = true,
 }: HandProps & { showHand?: boolean }) {
+  const waiting = awaiting.length > 0;
   return (
     <>
       {showHand && namingCardId !== null && <NameForm reason={reason} onSubmit={onSubmitName} />}
+      {showHand && proposal?.open && (
+        <ProposalForm onSubmit={proposal.onSubmit} onCancel={proposal.onCancel} />
+      )}
+      {showHand && waiting && <AwaitingProposal proposals={awaiting} />}
       <section className={styles.handZone} aria-label="手札">
         <h2 className={styles.zoneLabel}>手札</h2>
         {showHand && hand.length === 0 && (
@@ -37,18 +60,26 @@ export function HandZone({
                 <HandCard
                   card={card}
                   selected={namingCardId === card.id}
+                  disabled={waiting || busy}
                   onPlay={() => onPlay(card)}
                 />
               </li>
             ))}
-          {/* 仮：提案の保存（playable-scene の別の要望）と、未解決論点「公開版での提案」が決まるまで、提案のボタンを出さない。
-              見た目だけ、提案のカードの形（点線の枠）で置く */}
-          <li className={styles.proposal}>
-            <span className={styles.proposalMark} aria-hidden="true">
-              ＋
-            </span>
-            <p>GM への提案は準備中です（仮）</p>
-          </li>
+          {showHand && proposal && (
+            <li>
+              <button
+                type="button"
+                className={styles.proposal}
+                aria-pressed={proposal.open}
+                onClick={proposal.onOpen}
+              >
+                <span className={styles.proposalMark} aria-hidden="true">
+                  ＋
+                </span>
+                <span>GM への提案</span>
+              </button>
+            </li>
+          )}
         </ul>
       </section>
     </>

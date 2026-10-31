@@ -26,3 +26,11 @@ for (const route of routes) {
     expect(pageErrors, pageErrors.join('\n')).toHaveLength(0);
   });
 }
+
+// 公開版（build ＋ preview）には提案の口が無いので、提案のカードを出さない。PL-2 の主な流れではないので、
+// ユースケースのタグは付けない（docs/plans/2026-10-31-P6-提案の保存.md テスト41）
+test('試験のシーンに、GM への提案のカードが出ない（公開版）', async ({ page }) => {
+  await page.goto('/#/exam');
+  await expect(page.getByRole('button', { name: /受付へ進む/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'GM への提案' })).toHaveCount(0);
+});

@@ -1,0 +1,91 @@
+/* GM への提案の入力欄：メモ用紙に、複数行の記入欄 */
+.sheet {
+  background: var(--card);
+  color: var(--ink);
+  border-radius: var(--radius-panel);
+  box-shadow:
+    inset 0 0 0 6px var(--card),
+    inset 0 0 0 7px var(--card-edge),
+    var(--shadow-card);
+  padding: 22px clamp(18px, 5vw, 32px) 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .sheet {
+    animation: slide 260ms ease-out;
+  }
+}
+
+@keyframes slide {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.heading {
+  text-align: center;
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  letter-spacing: 0.3em;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--card-edge);
+}
+.input {
+  width: 100%;
+  resize: vertical;
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--ink-soft);
+  border-radius: var(--radius-card);
+  padding: 8px 10px;
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+.input:focus-visible {
+  outline: none;
+  border-color: var(--seal);
+}
+.reason {
+  color: var(--seal);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 6px;
+}
+.cancel,
+.submit {
+  border-radius: 999px;
+  padding: 9px 24px;
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+}
+.cancel {
+  background: transparent;
+  color: var(--ink-soft);
+  border: 1px solid var(--ink-soft);
+}
+.submit {
+  background: var(--seal);
+  color: var(--seal-ink);
+  border: none;
+  box-shadow: var(--shadow-card-sm);
+}
+.cancel:disabled,
+.submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
