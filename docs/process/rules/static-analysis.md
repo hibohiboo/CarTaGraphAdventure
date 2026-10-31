@@ -72,7 +72,7 @@ Biome の組み込みのルールに無い検査を、GritQL のプラグイン�
 
 ## 検査の対象から外しているファイル
 
-`files.includes` の `!` で、Biome の検査（lint・整形）から丸ごと外している。外しているのは、ビルドの出力・依存・自動生成のファイルと、Vercel Labs の配布物をそのまま取り込んだ `.claude/skills/react-best-practices`、MSW が `msw init` で作る `apps/web/public/mockServiceWorker.js` だけ。Vitest の HTML レポート（各パッケージの `.vitest/`）は `.gitignore` に書き、`vcs.useIgnoreFile` で外れる（`biome.json` には書かない）。
+`files.includes` の `!` で、Biome の検査（lint・整形）から丸ごと外している。外しているのは、ビルドの出力・依存・自動生成のファイルと、Vercel Labs の配布物をそのまま取り込んだ `.claude/skills/react-best-practices`だけ。Vitest の HTML レポート（各パッケージの `.vitest/`）は `.gitignore` に書き、`vcs.useIgnoreFile` で外れる（`biome.json` には書かない）。
 
 ## 入れていないもの
 

@@ -138,6 +138,21 @@ export const logEntrySchema = z.strictObject({
 });
 export type LogEntry = z.infer<typeof logEntrySchema>;
 
+/**
+ * 遊んだことのイベント（集約「プレイ」。docs/architecture/aggregates.md）。列を流し直すと状態に戻る。
+ * characterName は名前を書くカードのときだけ（正規化した後の名前）、text は正規化した後の提案の文
+ */
+export const playEventSchema = z.discriminatedUnion('type', [
+  z.strictObject({
+    type: z.literal('cardPlayed'),
+    beatId: z.string(),
+    cardId: z.string(),
+    characterName: z.string().optional(),
+  }),
+  z.strictObject({ type: z.literal('proposed'), beatId: z.string(), text: z.string() }),
+]);
+export type PlayEvent = z.infer<typeof playEventSchema>;
+
 export const playStateSchema = z.strictObject({
   beatId: z.string(),
   /** まだ名乗っていなければ null */
